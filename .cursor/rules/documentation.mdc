@@ -1,0 +1,55 @@
+---
+description: Правила для документации и коммуникации
+globs: ["**/*.md", "**/*.rst", "**/docs/**", "**/README*", "**/CHANGELOG*", "**/API*"]
+alwaysApply: true
+---
+
+# Documentation Rules
+
+## Documentation Strategy
+- **Living Documentation**: Keep documentation updated with code changes
+- **User-Focused**: Write for the intended audience (developers, users, stakeholders)
+- **Comprehensive Coverage**: Document all public APIs, configurations, and processes
+- **Accessibility**: Make documentation easy to find and understand
+
+## README Standards
+- **Project Overview**: Clear description of what the project does
+- **Quick Start**: Simple steps to get the project running
+- **Installation**: Detailed installation instructions
+- **Usage Examples**: Practical examples of how to use the project
+- **Contributing**: Guidelines for contributors
+- **License**: Clear licensing information
+
+## API Documentation
+- **OpenAPI/Swagger**: Use standard API documentation formats
+- **Interactive Examples**: Provide working examples for each endpoint
+- **Error Codes**: Document all possible error responses
+- **Authentication**: Clear authentication and authorization details
+- **Rate Limiting**: Document usage limits and restrictions
+
+## Code Documentation
+- **Docstrings**: Comprehensive docstrings for all public functions
+- **Comments**: Explain complex logic and business rules
+- **Type Hints**: Use type hints for better code understanding
+- **Examples**: Include usage examples in docstrings
+- **Deprecation**: Clearly mark deprecated features
+
+## Technical Documentation
+- **Architecture**: Document system architecture and design decisions
+- **Deployment**: Step-by-step deployment instructions
+- **Configuration**: Document all configuration options
+- **Troubleshooting**: Common issues and solutions
+- **Performance**: Performance characteristics and optimization tips
+
+## User Documentation
+- **User Guides**: Step-by-step guides for end users
+- **FAQ**: Frequently asked questions and answers
+- **Screenshots**: Visual aids for user interfaces
+- **Video Tutorials**: Video content for complex procedures
+- **Support**: How to get help and support
+
+## Maintenance
+- **Regular Updates**: Schedule regular documentation reviews
+- **Version Control**: Track documentation changes
+- **Feedback Integration**: Incorporate user feedback into documentation
+- **Quality Checks**: Review documentation for accuracy and clarity

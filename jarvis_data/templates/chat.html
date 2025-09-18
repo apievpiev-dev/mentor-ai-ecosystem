@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS Chat Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .chat-container {
+            width: 90%;
+            max-width: 800px;
+            height: 80vh;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .chat-header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+        
+        .message.user .message-avatar {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .message.jarvis .message-avatar {
+            background: linear-gradient(45deg, #00d4aa, #00a8cc);
+            color: white;
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            position: relative;
+        }
+        
+        .message.user .message-content {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .message.jarvis .message-content {
+            background: white;
+            color: #333;
+            border: 1px solid #e9ecef;
+        }
+        
+        .message-time {
+            font-size: 0.8em;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+        
+        .chat-input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .chat-input-form {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .chat-input:focus {
+            border-color: #667eea;
+        }
+        
+        .send-button {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s ease;
+        }
+        
+        .send-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-action {
+            padding: 8px 16px;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 1px solid #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-action:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            color: #666;
+            font-style: italic;
+            margin: 10px 0;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 3px;
+        }
+        
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #667eea;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.5;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+        
+        .system-message {
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 212, 170, 0.1);
+            color: #00a8cc;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>🤖 JARVIS Chat</h1>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span id="connection-status">Подключение...</span>
+            </div>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <div class="system-message">
+                Добро пожаловать! JARVIS готов к общению. Выберите действие или напишите сообщение.
+            </div>
+        </div>
+        
+        <div class="quick-actions">
+            <div class="quick-action" onclick="sendQuickMessage('Привет JARVIS!')">👋 Привет</div>
+            <div class="quick-action" onclick="sendQuickMessage('Покажи статус системы')">📊 Статус</div>
+            <div class="quick-action" onclick="sendQuickMessage('Запусти самоулучшение')">🧠 Улучшение</div>
+            <div class="quick-action" onclick="sendQuickMessage('Создай задачу анализа данных')">📈 Анализ</div>
+            <div class="quick-action" onclick="sendQuickMessage('Покажи активные задачи')">📋 Задачи</div>
+        </div>
+        
+        <div class="typing-indicator" id="typing-indicator">
+            <span>JARVIS печатает</span>
+            <div class="typing-dots">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <form class="chat-input-form" onsubmit="sendMessage(event)">
+                <input 
+                    type="text" 
+                    class="chat-input" 
+                    id="message-input"
+                    placeholder="Введите сообщение для JARVIS..."
+                    autocomplete="off"
+                >
+                <button type="submit" class="send-button" id="send-button">
+                    Отправить
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let ws;
+        let messageCount = 0;
+        
+        // Инициализация WebSocket соединения
+        function initWebSocket() {
+            ws = new WebSocket('ws://localhost:8080/ws');
+            
+            ws.onopen = function() {
+                document.getElementById('connection-status').textContent = 'Подключено';
+                addSystemMessage('✅ Подключение к JARVIS установлено');
+            };
+            
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                if (data.state) {
+                    // Обновляем статус системы
+                    updateSystemStatus(data);
+                }
+            };
+            
+            ws.onclose = function() {
+                document.getElementById('connection-status').textContent = 'Отключено';
+                addSystemMessage('❌ Соединение с JARVIS потеряно');
+                // Переподключение через 5 секунд
+                setTimeout(initWebSocket, 5000);
+            };
+            
+            ws.onerror = function() {
+                document.getElementById('connection-status').textContent = 'Ошибка';
+                addSystemMessage('❌ Ошибка подключения к JARVIS');
+            };
+        }
+        
+        // Отправка сообщения
+        async function sendMessage(event) {
+            event.preventDefault();
+            
+            const input = document.getElementById('message-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Добавляем сообщение пользователя в чат
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Показываем индикатор печати
+            showTypingIndicator();
+            
+            try {
+                // Отправляем сообщение JARVIS
+                const response = await fetch('/api/tasks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        type: 'user_message',
+                        priority: 5,
+                        parameters: {
+                            message: message,
+                            timestamp: new Date().toISOString(),
+                            user_id: 'web_chat'
+                        }
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                // Ждем обработки
+                setTimeout(async () => {
+                    const jarvisResponse = await getJarvisResponse(result.task_id);
+                    hideTypingIndicator();
+                    if (jarvisResponse && jarvisResponse !== 'JARVIS обрабатывает ваш запрос...') {
+                        addMessage(jarvisResponse, 'jarvis');
+                    } else {
+                        addMessage('Сообщение получено и обработано JARVIS', 'jarvis');
+                    }
+                }, 3000);
+                } else {
+                    hideTypingIndicator();
+                    addMessage('Извините, произошла ошибка при отправке сообщения', 'jarvis');
+                }
+                
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage('Ошибка связи с JARVIS: ' + error.message, 'jarvis');
+            }
+        }
+        
+        // Отправка быстрого сообщения
+        function sendQuickMessage(message) {
+            document.getElementById('message-input').value = message;
+            sendMessage({ preventDefault: () => {} });
+        }
+        
+        // Получение ответа от JARVIS
+        async function getJarvisResponse(taskId) {
+            try {
+                const response = await fetch('/api/tasks');
+                if (response.ok) {
+                    const data = await response.json();
+                    const tasks = data.tasks || [];
+                    
+                    const task = tasks.find(t => t.id === taskId);
+                    if (task) {
+                        if (task.status === 'completed') {
+                            const result = task.result || {};
+                            // Извлекаем сообщение из результата
+                            if (result.message) {
+                                return result.message;
+                            } else if (typeof result === 'string') {
+                                return result;
+                            } else {
+                                return 'Задача выполнена успешно';
+                            }
+                        } else if (task.status === 'failed') {
+                            return 'Ошибка: ' + (task.error || 'Неизвестная ошибка');
+                        } else {
+                            return 'JARVIS обрабатывает ваш запрос...';
+                        }
+                    }
+                }
+                return 'JARVIS обрабатывает ваш запрос...';
+            } catch (error) {
+                return 'Ошибка получения ответа: ' + error.message;
+            }
+        }
+        
+        // Добавление сообщения в чат
+        function addMessage(text, sender) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = sender === 'user' ? '👤' : '🤖';
+            
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.innerHTML = `
+                ${text}
+                <div class="message-time">${new Date().toLocaleTimeString()}</div>
+            `;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            messagesContainer.appendChild(messageDiv);
+            
+            // Прокрутка вниз
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // Добавление системного сообщения
+        function addSystemMessage(text) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'system-message';
+            messageDiv.textContent = text;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // Показать индикатор печати
+        function showTypingIndicator() {
+            document.getElementById('typing-indicator').style.display = 'flex';
+        }
+        
+        // Скрыть индикатор печати
+        function hideTypingIndicator() {
+            document.getElementById('typing-indicator').style.display = 'none';
+        }
+        
+        // Обновление статуса системы
+        function updateSystemStatus(data) {
+            // Можно добавить отображение статуса системы в реальном времени
+            if (data.state && data.state.performance_score) {
+                // Обновляем статус подключения с информацией о производительности
+                const status = document.getElementById('connection-status');
+                status.textContent = `Подключено (${Math.round(data.state.performance_score * 100)}%)`;
+            }
+        }
+        
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            initWebSocket();
+            
+            // Фокус на поле ввода
+            document.getElementById('message-input').focus();
+            
+            // Добавляем приветственное сообщение от JARVIS
+            setTimeout(() => {
+                addMessage('Привет! Я JARVIS, ваш AI-помощник. Готов помочь с анализом данных, автоматизацией и самоулучшением системы. Что вы хотели бы сделать?', 'jarvis');
+            }, 1000);
+        });
+        
+        // Обработка Enter для отправки сообщения
+        document.getElementById('message-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage(e);
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS Chat Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .chat-container {
+            width: 90%;
+            max-width: 800px;
+            height: 80vh;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 20px 20px 0 0;
+        }
+        
+        .chat-header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff88;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+        
+        .message.user .message-avatar {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .message.jarvis .message-avatar {
+            background: linear-gradient(45deg, #00d4aa, #00a8cc);
+            color: white;
+        }
+        
+        .message-content {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            position: relative;
+        }
+        
+        .message.user .message-content {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .message.jarvis .message-content {
+            background: white;
+            color: #333;
+            border: 1px solid #e9ecef;
+        }
+        
+        .message-time {
+            font-size: 0.8em;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+        
+        .chat-input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .chat-input-form {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        
+        .chat-input:focus {
+            border-color: #667eea;
+        }
+        
+        .send-button {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.2s ease;
+        }
+        
+        .send-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .send-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-action {
+            padding: 8px 16px;
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 1px solid #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-action:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            color: #666;
+            font-style: italic;
+            margin: 10px 0;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 3px;
+        }
+        
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #667eea;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.5;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+        
+        .system-message {
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 212, 170, 0.1);
+            color: #00a8cc;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>🤖 JARVIS Chat</h1>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span id="connection-status">Подключение...</span>
+            </div>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <div class="system-message">
+                Добро пожаловать! JARVIS готов к общению. Выберите действие или напишите сообщение.
+            </div>
+        </div>
+        
+        <div class="quick-actions">
+            <div class="quick-action" onclick="sendQuickMessage('Привет JARVIS!')">👋 Привет</div>
+            <div class="quick-action" onclick="sendQuickMessage('Покажи статус системы')">📊 Статус</div>
+            <div class="quick-action" onclick="sendQuickMessage('Запусти самоулучшение')">🧠 Улучшение</div>
+            <div class="quick-action" onclick="sendQuickMessage('Создай задачу анализа данных')">📈 Анализ</div>
+            <div class="quick-action" onclick="sendQuickMessage('Покажи активные задачи')">📋 Задачи</div>
+        </div>
+        
+        <div class="typing-indicator" id="typing-indicator">
+            <span>JARVIS печатает</span>
+            <div class="typing-dots">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+        
+        <div class="chat-input-container">
+            <form class="chat-input-form" onsubmit="sendMessage(event)">
+                <input 
+                    type="text" 
+                    class="chat-input" 
+                    id="message-input"
+                    placeholder="Введите сообщение для JARVIS..."
+                    autocomplete="off"
+                >
+                <button type="submit" class="send-button" id="send-button">
+                    Отправить
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let ws;
+        let messageCount = 0;
+        
+        // Инициализация WebSocket соединения
+        function initWebSocket() {
+            ws = new WebSocket('ws://localhost:8080/ws');
+            
+            ws.onopen = function() {
+                document.getElementById('connection-status').textContent = 'Подключено';
+                addSystemMessage('✅ Подключение к JARVIS установлено');
+            };
+            
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                if (data.state) {
+                    // Обновляем статус системы
+                    updateSystemStatus(data);
+                }
+            };
+            
+            ws.onclose = function() {
+                document.getElementById('connection-status').textContent = 'Отключено';
+                addSystemMessage('❌ Соединение с JARVIS потеряно');
+                // Переподключение через 5 секунд
+                setTimeout(initWebSocket, 5000);
+            };
+            
+            ws.onerror = function() {
+                document.getElementById('connection-status').textContent = 'Ошибка';
+                addSystemMessage('❌ Ошибка подключения к JARVIS');
+            };
+        }
+        
+        // Отправка сообщения
+        async function sendMessage(event) {
+            event.preventDefault();
+            
+            const input = document.getElementById('message-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Добавляем сообщение пользователя в чат
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Показываем индикатор печати
+            showTypingIndicator();
+            
+            try {
+                // Отправляем сообщение JARVIS
+                const response = await fetch('/api/tasks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        type: 'user_message',
+                        priority: 5,
+                        parameters: {
+                            message: message,
+                            timestamp: new Date().toISOString(),
+                            user_id: 'web_chat'
+                        }
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                // Ждем обработки
+                setTimeout(async () => {
+                    const jarvisResponse = await getJarvisResponse(result.task_id);
+                    hideTypingIndicator();
+                    if (jarvisResponse && jarvisResponse !== 'JARVIS обрабатывает ваш запрос...') {
+                        addMessage(jarvisResponse, 'jarvis');
+                    } else {
+                        addMessage('Сообщение получено и обработано JARVIS', 'jarvis');
+                    }
+                }, 3000);
+                } else {
+                    hideTypingIndicator();
+                    addMessage('Извините, произошла ошибка при отправке сообщения', 'jarvis');
+                }
+                
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage('Ошибка связи с JARVIS: ' + error.message, 'jarvis');
+            }
+        }
+        
+        // Отправка быстрого сообщения
+        function sendQuickMessage(message) {
+            document.getElementById('message-input').value = message;
+            sendMessage({ preventDefault: () => {} });
+        }
+        
+        // Получение ответа от JARVIS
+        async function getJarvisResponse(taskId) {
+            try {
+                const response = await fetch('/api/tasks');
+                if (response.ok) {
+                    const data = await response.json();
+                    const tasks = data.tasks || [];
+                    
+                    const task = tasks.find(t => t.id === taskId);
+                    if (task) {
+                        if (task.status === 'completed') {
+                            const result = task.result || {};
+                            // Извлекаем сообщение из результата
+                            if (result.message) {
+                                return result.message;
+                            } else if (typeof result === 'string') {
+                                return result;
+                            } else {
+                                return 'Задача выполнена успешно';
+                            }
+                        } else if (task.status === 'failed') {
+                            return 'Ошибка: ' + (task.error || 'Неизвестная ошибка');
+                        } else {
+                            return 'JARVIS обрабатывает ваш запрос...';
+                        }
+                    }
+                }
+                return 'JARVIS обрабатывает ваш запрос...';
+            } catch (error) {
+                return 'Ошибка получения ответа: ' + error.message;
+            }
+        }
+        
+        // Добавление сообщения в чат
+        function addMessage(text, sender) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = sender === 'user' ? '👤' : '🤖';
+            
+            const content = document.createElement('div');
+            content.className = 'message-content';
+            content.innerHTML = `
+                ${text}
+                <div class="message-time">${new Date().toLocaleTimeString()}</div>
+            `;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(content);
+            messagesContainer.appendChild(messageDiv);
+            
+            // Прокрутка вниз
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // Добавление системного сообщения
+        function addSystemMessage(text) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'system-message';
+            messageDiv.textContent = text;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // Показать индикатор печати
+        function showTypingIndicator() {
+            document.getElementById('typing-indicator').style.display = 'flex';
+        }
+        
+        // Скрыть индикатор печати
+        function hideTypingIndicator() {
+            document.getElementById('typing-indicator').style.display = 'none';
+        }
+        
+        // Обновление статуса системы
+        function updateSystemStatus(data) {
+            // Можно добавить отображение статуса системы в реальном времени
+            if (data.state && data.state.performance_score) {
+                // Обновляем статус подключения с информацией о производительности
+                const status = document.getElementById('connection-status');
+                status.textContent = `Подключено (${Math.round(data.state.performance_score * 100)}%)`;
+            }
+        }
+        
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            initWebSocket();
+            
+            // Фокус на поле ввода
+            document.getElementById('message-input').focus();
+            
+            // Добавляем приветственное сообщение от JARVIS
+            setTimeout(() => {
+                addMessage('Привет! Я JARVIS, ваш AI-помощник. Готов помочь с анализом данных, автоматизацией и самоулучшением системы. Что вы хотели бы сделать?', 'jarvis');
+            }, 1000);
+        });
+        
+        // Обработка Enter для отправки сообщения
+        document.getElementById('message-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage(e);
+            }
+        });
+    </script>
+</body>
+</html>

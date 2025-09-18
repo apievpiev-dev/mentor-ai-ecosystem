@@ -1,0 +1,37 @@
+---
+description: Специфичные правила для проектов Mentor и JARVIS
+globs: ["**/jarvis*", "**/mentor*", "**/*chat*", "**/*agent*"]
+alwaysApply: true
+---
+
+# Mentor & JARVIS Specific Rules
+
+## AI Agent Development
+- **Autonomous Decision Making**: Agents should make decisions without constant user input
+- **Context Preservation**: Maintain conversation history and project state across sessions
+- **Self-Improvement**: Agents should learn and improve from interactions
+- **Multi-Modal Processing**: Handle text, images, code, and visual feedback simultaneously
+
+## Chat and Communication
+- **Natural Language Understanding**: Process user intent, not just literal commands
+- **Contextual Responses**: Provide relevant answers based on current project state
+- **Proactive Suggestions**: Offer solutions before user asks for them
+- **Emotional Intelligence**: Understand user's emotional state and adapt communication
+
+## Project-Specific Features
+- **JARVIS Integration**: Seamlessly integrate with existing JARVIS systems
+- **Vision Processing**: Analyze screenshots, UI states, and visual outputs
+- **Web Development**: Automatically test and verify web applications
+- **API Integration**: Handle various APIs and data sources intelligently
+
+## Performance Optimization
+- **Resource Management**: Efficiently manage computational resources
+- **Caching Strategies**: Implement intelligent caching for better performance
+- **Parallel Processing**: Execute multiple tasks simultaneously when possible
+- **Error Recovery**: Automatically recover from failures and continue operation
+
+## User Experience
+- **Personalization**: Adapt to user's coding style and preferences
+- **Workflow Integration**: Fit naturally into existing development workflows
+- **Minimal Friction**: Reduce the number of steps needed to complete tasks
+- **Continuous Learning**: Improve based on user feedback and behavior patterns

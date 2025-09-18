@@ -1,0 +1,36 @@
+[Unit]
+Description=Cloud Agent System - Multi-Agent AI System
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=mentor
+Group=mentor
+WorkingDirectory=/home/mentor
+ExecStart=/home/mentor/multi_agent_env/bin/python /home/mentor/cloud_agent_system.py
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=cloud-agent-system
+
+# Переменные окружения
+Environment=PYTHONPATH=/home/mentor
+Environment=OLLAMA_HOST=0.0.0.0:11434
+Environment=OLLAMA_ORIGINS=*
+
+# Ограничения ресурсов
+MemoryLimit=8G
+CPUQuota=400%
+
+# Безопасность
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/mentor
+
+[Install]
+WantedBy=multi-user.target

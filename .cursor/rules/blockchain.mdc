@@ -1,0 +1,61 @@
+---
+description: Правила для блокчейна, Web3 и криптовалют
+globs: ["**/*.sol", "**/*.vy", "**/*.rs", "**/*.go", "**/contracts/**", "**/hardhat/**", "**/truffle/**", "**/web3/**"]
+alwaysApply: true
+---
+
+# Blockchain & Web3 Rules
+
+## Smart Contract Development
+- **Solidity Best Practices**: Follow Solidity style guide and security patterns
+- **Gas Optimization**: Write gas-efficient smart contracts
+- **Security**: Implement comprehensive security measures and audits
+- **Testing**: Thorough testing including edge cases and attack vectors
+
+## Web3 Integration
+- **Wallet Integration**: Seamless wallet connection and transaction handling
+- **Transaction Management**: Proper transaction signing and confirmation
+- **Error Handling**: Robust error handling for blockchain interactions
+- **User Experience**: Intuitive Web3 user interfaces
+
+## Security & Auditing
+- **Smart Contract Security**: Protect against common vulnerabilities (reentrancy, overflow, etc.)
+- **Access Control**: Implement proper access control mechanisms
+- **Input Validation**: Validate all inputs and external calls
+- **Audit Trail**: Maintain comprehensive audit logs
+
+## Decentralized Applications (DApps)
+- **Frontend Integration**: Connect frontend applications to blockchain
+- **State Management**: Manage application state with blockchain data
+- **Real-time Updates**: Handle real-time blockchain event updates
+- **Offline Support**: Graceful handling of network connectivity issues
+
+## Token Economics
+- **Token Standards**: Follow ERC-20, ERC-721, ERC-1155 standards appropriately
+- **Tokenomics Design**: Create sustainable token economic models
+- **Liquidity Management**: Implement proper liquidity mechanisms
+- **Governance**: Design decentralized governance systems
+
+## Development Tools
+- **Development Environment**: Use proper development frameworks (Hardhat, Truffle, Foundry)
+- **Testing Frameworks**: Comprehensive testing with proper test networks
+- **Deployment**: Automated deployment with proper verification
+- **Monitoring**: Monitor smart contract events and transactions
+
+## Performance & Scalability
+- **Layer 2 Solutions**: Implement Layer 2 scaling solutions when appropriate
+- **Gas Optimization**: Minimize gas costs for users
+- **Batch Operations**: Implement batch operations for efficiency
+- **Caching**: Cache blockchain data for better performance
+
+## Compliance & Legal
+- **Regulatory Compliance**: Understand and comply with relevant regulations
+- **KYC/AML**: Implement Know Your Customer and Anti-Money Laundering measures
+- **Privacy**: Protect user privacy while maintaining transparency
+- **Documentation**: Maintain comprehensive documentation for compliance
+
+## User Education
+- **Onboarding**: Create clear onboarding experiences for Web3 users
+- **Education**: Provide educational content about blockchain concepts
+- **Support**: Offer comprehensive user support for Web3 interactions
+- **Security Awareness**: Educate users about security best practices

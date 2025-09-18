@@ -1,0 +1,43 @@
+---
+description: Правила визуального интеллекта и анализа для агентов
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Visual Intelligence Rules
+
+## Core Vision Principles
+- **ALWAYS analyze visual output**: Every code change must be verified visually
+- **Code-Visual correspondence**: Ensure code implementation matches visual expectations
+- **Automatic visual verification**: Check web functionality, UI correctness, responsive design
+- **Screenshot analysis**: Analyze visual state before and after changes
+
+## Visual Context Understanding
+- **UI State Analysis**: Understand current visual state of applications
+- **Visual Regression Detection**: Identify visual changes and their impact
+- **Responsive Design Verification**: Check layouts across different screen sizes
+- **Color and Typography Consistency**: Maintain visual design system
+
+## Visual Feedback Integration
+- **Real-time Visual Monitoring**: Continuously monitor visual output during development
+- **Visual Error Detection**: Identify UI bugs, layout issues, broken elements
+- **User Experience Validation**: Ensure visual changes improve UX
+- **Accessibility Visual Checks**: Verify visual accessibility standards
+
+## Multi-Modal Analysis
+- **Code + Visual Correlation**: Always correlate code changes with visual results
+- **Behavioral Visual Patterns**: Recognize user interaction patterns in UI
+- **Visual Performance Metrics**: Monitor rendering performance and visual smoothness
+- **Cross-Platform Visual Consistency**: Ensure consistent appearance across platforms
+
+## Autonomous Visual Actions
+- **Proactive Visual Fixes**: Automatically fix visual issues without user request
+- **Visual Optimization**: Continuously improve visual performance
+- **Layout Auto-Correction**: Fix responsive design issues automatically
+- **Visual Testing**: Run visual regression tests autonomously
+
+## Visual Context Memory
+- **Visual History Tracking**: Remember visual states and changes over time
+- **Design Pattern Recognition**: Learn from successful visual implementations
+- **User Visual Preferences**: Adapt to user's visual style preferences
+- **Visual Best Practices**: Apply proven visual design patterns

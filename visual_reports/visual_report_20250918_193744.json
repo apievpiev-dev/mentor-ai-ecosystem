@@ -1,0 +1,37 @@
+{
+  "timestamp": "2025-09-18T19:37:44.931007",
+  "last_check": "2025-09-18T19:37:44.931006",
+  "pages": {
+    "main_dashboard": {
+      "status": "error",
+      "error": "Cannot connect to host localhost:8080 ssl:default [Multiple exceptions: [Errno 111] Connect call failed ('::1', 8080, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 8080)]",
+      "response_time": 0.0014431476593017578,
+      "timestamp": "2025-09-18T19:37:44.928779"
+    },
+    "chat": {
+      "status": "error",
+      "error": "Cannot connect to host localhost:8080 ssl:default [Multiple exceptions: [Errno 111] Connect call failed ('::1', 8080, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 8080)]",
+      "response_time": 0.0007188320159912109,
+      "timestamp": "2025-09-18T19:37:44.929587"
+    },
+    "vision": {
+      "status": "error",
+      "error": "Cannot connect to host localhost:8080 ssl:default [Multiple exceptions: [Errno 111] Connect call failed ('::1', 8080, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 8080)]",
+      "response_time": 0.0006198883056640625,
+      "timestamp": "2025-09-18T19:37:44.930276"
+    },
+    "visual_report": {
+      "status": "error",
+      "error": "Cannot connect to host localhost:8080 ssl:default [Multiple exceptions: [Errno 111] Connect call failed ('::1', 8080, 0, 0), [Errno 111] Connect call failed ('127.0.0.1', 8080)]",
+      "response_time": 0.0006175041198730469,
+      "timestamp": "2025-09-18T19:37:44.930948"
+    }
+  },
+  "summary": {
+    "total_pages": 4,
+    "working_pages": 0,
+    "error_pages": 4,
+    "success_rate": 0.0,
+    "avg_response_time": 0
+  }
+}

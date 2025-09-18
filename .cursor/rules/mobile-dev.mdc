@@ -1,0 +1,55 @@
+---
+description: Правила для мобильной разработки (React Native, Flutter, Native)
+globs: ["**/*.tsx", "**/*.jsx", "**/*.dart", "**/*.swift", "**/*.kt", "**/*.java", "**/android/**", "**/ios/**", "**/mobile/**"]
+alwaysApply: true
+---
+
+# Mobile Development Rules
+
+## Cross-Platform Development
+- **React Native**: Use functional components, hooks, and modern patterns
+- **Flutter**: Follow Material Design guidelines, use BLoC pattern for state management
+- **Code Reusability**: Maximize code sharing between platforms while maintaining native performance
+- **Platform-Specific Features**: Implement platform-specific functionality when needed
+
+## Performance Optimization
+- **Memory Management**: Efficient memory usage and garbage collection
+- **Battery Optimization**: Minimize battery drain through efficient algorithms
+- **Network Optimization**: Implement proper caching and request batching
+- **Rendering Performance**: Optimize UI rendering and animations
+
+## User Experience
+- **Responsive Design**: Adapt to different screen sizes and orientations
+- **Touch Interactions**: Implement intuitive touch gestures and feedback
+- **Loading States**: Provide clear loading indicators and error states
+- **Offline Support**: Implement offline functionality where appropriate
+
+## Platform Guidelines
+- **iOS Guidelines**: Follow Apple Human Interface Guidelines
+- **Android Guidelines**: Follow Material Design principles
+- **Accessibility**: Implement accessibility features for all users
+- **Platform Navigation**: Use platform-appropriate navigation patterns
+
+## Testing Strategy
+- **Unit Testing**: Test business logic and utility functions
+- **Integration Testing**: Test component interactions and API calls
+- **E2E Testing**: Test complete user journeys across platforms
+- **Device Testing**: Test on various devices and OS versions
+
+## Security & Privacy
+- **Data Protection**: Secure sensitive data with proper encryption
+- **API Security**: Implement secure API communication
+- **Biometric Authentication**: Use platform biometric features appropriately
+- **Privacy Compliance**: Follow GDPR and platform privacy guidelines
+
+## Deployment & Distribution
+- **App Store Optimization**: Optimize app store listings and metadata
+- **Version Management**: Implement proper versioning and update strategies
+- **Analytics**: Track user behavior and app performance
+- **Crash Reporting**: Implement comprehensive crash reporting
+
+## Development Tools
+- **Debugging**: Use platform-specific debugging tools effectively
+- **Profiling**: Profile app performance and identify bottlenecks
+- **Hot Reloading**: Utilize hot reloading for faster development
+- **Code Analysis**: Use static analysis tools for code quality

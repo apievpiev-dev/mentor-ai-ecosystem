@@ -1,0 +1,55 @@
+---
+description: Правила для машинного обучения, AI и data science
+globs: ["**/*.ipynb", "**/*ml*.py", "**/*ai*.py", "**/*model*.py", "**/*train*.py", "**/*predict*.py", "**/models/**", "**/data/**"]
+alwaysApply: true
+---
+
+# Machine Learning & AI Rules
+
+## Data Science Best Practices
+- **Data Quality**: Always validate and clean data before processing
+- **Reproducibility**: Use random seeds, version control for data and models
+- **Data Privacy**: Handle sensitive data according to privacy regulations
+- **Documentation**: Document data sources, preprocessing steps, and assumptions
+
+## Model Development
+- **Iterative Development**: Start simple, gradually increase complexity
+- **Cross-Validation**: Use proper CV techniques to avoid overfitting
+- **Feature Engineering**: Create meaningful features that improve model performance
+- **Model Selection**: Compare multiple algorithms and select best performer
+
+## Training & Evaluation
+- **Train/Validation/Test Split**: Proper data splitting for unbiased evaluation
+- **Metrics Selection**: Choose appropriate metrics for the problem type
+- **Hyperparameter Tuning**: Systematic approach to parameter optimization
+- **Model Interpretability**: Understand and explain model decisions
+
+## Production ML
+- **Model Versioning**: Track model versions and performance over time
+- **A/B Testing**: Test model performance in production environment
+- **Monitoring**: Monitor model drift and performance degradation
+- **Scalability**: Design models that can handle production workloads
+
+## AI Agent Development
+- **Autonomous Decision Making**: Agents should make decisions without constant input
+- **Learning from Experience**: Implement reinforcement learning where appropriate
+- **Context Awareness**: Maintain context across interactions and sessions
+- **Ethical AI**: Ensure AI decisions are fair, transparent, and unbiased
+
+## Performance & Optimization
+- **Computational Efficiency**: Optimize for speed and resource usage
+- **Memory Management**: Efficient memory usage for large datasets
+- **Parallel Processing**: Utilize multi-core and GPU processing when beneficial
+- **Caching**: Cache expensive computations and model predictions
+
+## Security & Privacy
+- **Data Encryption**: Encrypt sensitive data in transit and at rest
+- **Model Security**: Protect against adversarial attacks and model stealing
+- **Privacy Preservation**: Use techniques like differential privacy when needed
+- **Access Control**: Implement proper access controls for data and models
+
+## Visualization & Communication
+- **Data Visualization**: Create clear, informative visualizations
+- **Model Explanation**: Provide interpretable explanations for model decisions
+- **Results Communication**: Present findings in accessible formats
+- **Interactive Dashboards**: Create dashboards for model monitoring and analysis

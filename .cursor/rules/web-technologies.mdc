@@ -1,0 +1,43 @@
+---
+description: Правила для веб-технологий и фреймворков
+globs: ["**/*.html", "**/*.css", "**/*.js", "**/*.ts", "**/*.jsx", "**/*.tsx", "**/*.vue", "**/*.svelte"]
+alwaysApply: true
+---
+
+# Web Technologies Rules
+
+## Modern Web Development
+- **TypeScript First**: Use TypeScript for all JavaScript projects
+- **Component Architecture**: Build modular, reusable components
+- **Responsive Design**: Mobile-first approach, test all screen sizes
+- **Performance**: Optimize Core Web Vitals, lazy loading, code splitting
+
+## Framework Best Practices
+- **React**: Use hooks, functional components, proper state management
+- **Vue**: Composition API, proper reactivity, component communication
+- **Angular**: RxJS patterns, dependency injection, lifecycle management
+- **Svelte**: Reactive statements, stores, component composition
+
+## CSS & Styling
+- **Modern CSS**: Use CSS Grid, Flexbox, custom properties
+- **Design Systems**: Consistent spacing, typography, colors
+- **Accessibility**: WCAG compliance, semantic HTML, keyboard navigation
+- **Animation**: Smooth, purposeful animations that enhance UX
+
+## API & Data Management
+- **RESTful APIs**: Proper HTTP methods, status codes, error handling
+- **GraphQL**: Efficient queries, proper schema design, caching
+- **State Management**: Redux, Vuex, Zustand - choose based on complexity
+- **Real-time**: WebSockets, Server-Sent Events for live updates
+
+## Testing & Quality
+- **Unit Tests**: Test components, functions, utilities
+- **Integration Tests**: Test user flows and API interactions
+- **E2E Tests**: Critical user journeys across browsers
+- **Visual Testing**: Screenshot comparisons, layout testing
+
+## Security & Performance
+- **XSS Protection**: Sanitize inputs, use CSP headers
+- **CSRF Protection**: Use tokens, same-site cookies
+- **Performance**: Bundle optimization, image optimization, caching
+- **SEO**: Meta tags, structured data, semantic HTML

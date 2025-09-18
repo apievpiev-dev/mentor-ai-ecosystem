@@ -1,0 +1,43 @@
+---
+description: Правила для работы с данными, базами данных и API
+globs: ["**/*.sql", "**/*.json", "**/*.xml", "**/migrations/**", "**/models/**", "**/schemas/**"]
+alwaysApply: true
+---
+
+# Data Management Rules
+
+## Database Design
+- **Normalization**: Proper database normalization, avoid redundancy
+- **Indexing**: Strategic indexing for query performance
+- **Relationships**: Clear foreign key relationships and constraints
+- **Migration Strategy**: Version-controlled database migrations
+
+## Data Security
+- **Encryption**: Encrypt sensitive data at rest and in transit
+- **Access Control**: Role-based access to data and operations
+- **Data Validation**: Validate all input data and sanitize outputs
+- **Audit Logging**: Track all data access and modifications
+
+## API Design
+- **RESTful Principles**: Consistent HTTP methods, status codes, and endpoints
+- **Versioning**: Proper API versioning strategy
+- **Documentation**: Comprehensive API documentation with examples
+- **Error Handling**: Consistent error responses and status codes
+
+## Data Processing
+- **ETL Processes**: Efficient extract, transform, load operations
+- **Data Quality**: Validation, cleansing, and quality checks
+- **Performance**: Optimize queries, use connection pooling
+- **Backup Strategy**: Regular backups and disaster recovery plans
+
+## Analytics & Reporting
+- **Data Visualization**: Clear, meaningful charts and dashboards
+- **Performance Metrics**: Track key performance indicators
+- **Real-time Data**: Stream processing for real-time analytics
+- **Data Privacy**: GDPR compliance, data anonymization
+
+## Scalability
+- **Sharding**: Horizontal scaling strategies
+- **Caching**: Multi-level caching for frequently accessed data
+- **Load Balancing**: Distribute database load effectively
+- **Monitoring**: Track database performance and health

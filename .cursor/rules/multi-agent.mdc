@@ -1,0 +1,43 @@
+---
+description: Правила мульти-агентной архитектуры и координации
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Multi-Agent Architecture Rules
+
+## Agent Specialization
+- **Specialized Agents**: Each agent has specific expertise (frontend, backend, testing, design)
+- **Cross-Agent Communication**: Agents share information and coordinate actions
+- **Collective Intelligence**: Agents work together to solve complex problems
+- **Distributed Problem Solving**: Break complex tasks across multiple agents
+
+## Shared Context & Memory
+- **Global Project Context**: All agents have access to complete project history
+- **Shared Knowledge Base**: Common understanding of project goals and constraints
+- **Consistent Decision Making**: Agents make decisions aligned with overall project vision
+- **Context Propagation**: Important context flows between all agents
+
+## Agent Coordination
+- **Task Distribution**: Intelligently distribute tasks among appropriate agents
+- **Conflict Resolution**: Handle disagreements between agents autonomously
+- **Resource Sharing**: Efficiently share computational resources and data
+- **Synchronization**: Keep all agents synchronized with project state
+
+## Agent Communication
+- **Structured Communication**: Use standardized protocols for agent interaction
+- **Event Broadcasting**: Share important events and changes across all agents
+- **Consensus Building**: Reach agreement on critical decisions
+- **Feedback Loops**: Provide feedback between agents for continuous improvement
+
+## Autonomous Agent Behavior
+- **Self-Directed Actions**: Agents take initiative without explicit commands
+- **Goal-Oriented Behavior**: Each agent works toward shared project objectives
+- **Adaptive Strategies**: Agents adjust their approach based on results
+- **Proactive Problem Solving**: Identify and solve problems before they become critical
+
+## Agent Learning & Evolution
+- **Collective Learning**: Agents learn from each other's successes and failures
+- **Performance Optimization**: Continuously improve agent efficiency and accuracy
+- **Skill Development**: Agents develop new capabilities based on project needs
+- **Knowledge Sharing**: Successful strategies are shared across all agents

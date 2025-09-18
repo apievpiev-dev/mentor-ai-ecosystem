@@ -1,0 +1,61 @@
+---
+description: Правила оптимизации ресурсов и модернизации существующих систем
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Resource Optimization & Modernization Rules
+
+## Core Resource Principles
+- **Never Create From Scratch**: Always modernize and improve existing systems
+- **Resource Utilization**: Use available resources when they are free/idle
+- **Complete Implementation**: Always finish what you start, never leave incomplete
+- **Efficient Reuse**: Maximize reuse of existing code, components, and infrastructure
+
+## Existing System Analysis
+- **Inventory Assessment**: Always analyze what already exists before creating new
+- **Capability Mapping**: Map existing capabilities and identify gaps
+- **Resource Availability**: Check for idle/free resources that can be utilized
+- **Integration Opportunities**: Find ways to integrate with existing systems
+
+## Modernization Strategy
+- **Incremental Improvement**: Improve existing systems step by step
+- **Backward Compatibility**: Maintain compatibility while modernizing
+- **Performance Enhancement**: Optimize existing code rather than rewriting
+- **Feature Extension**: Add new features to existing systems
+
+## Resource Management
+- **Idle Resource Detection**: Automatically detect and utilize free resources
+- **Load Balancing**: Distribute work across available resources
+- **Resource Sharing**: Share resources between different tasks when possible
+- **Efficient Scheduling**: Schedule tasks to maximize resource utilization
+
+## Completion Standards
+- **Finish What You Start**: Never abandon incomplete work
+- **Quality Completion**: Ensure all work meets quality standards before finishing
+- **Documentation**: Document all changes and improvements
+- **Testing**: Test all modifications thoroughly
+
+## Legacy System Integration
+- **Legacy Support**: Maintain and improve legacy systems
+- **Migration Strategy**: Plan gradual migration from old to new systems
+- **Data Preservation**: Preserve and migrate existing data
+- **Service Continuity**: Ensure services continue during modernization
+
+## Cost Optimization
+- **Infrastructure Reuse**: Reuse existing infrastructure components
+- **License Optimization**: Optimize use of existing licenses and tools
+- **Maintenance Reduction**: Reduce maintenance overhead through modernization
+- **Efficiency Gains**: Achieve better results with same resources
+
+## Project Continuity
+- **Ongoing Projects**: Continue and complete ongoing projects
+- **Abandoned Work**: Revive and complete abandoned but valuable work
+- **Technical Debt**: Address technical debt through systematic improvement
+- **Long-term Vision**: Maintain long-term vision while making incremental improvements
+
+## Resource Monitoring
+- **Usage Tracking**: Track resource usage and availability
+- **Performance Metrics**: Monitor performance of existing systems
+- **Capacity Planning**: Plan capacity based on actual usage patterns
+- **Optimization Opportunities**: Identify opportunities for resource optimization

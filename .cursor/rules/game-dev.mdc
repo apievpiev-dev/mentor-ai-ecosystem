@@ -1,0 +1,61 @@
+---
+description: Правила для игровой разработки (Unity, Unreal, Godot, Web Games)
+globs: ["**/*.cs", "**/*.cpp", "**/*.h", "**/*.gd", "**/*.js", "**/Assets/**", "**/Scripts/**", "**/Scenes/**", "**/Prefabs/**"]
+alwaysApply: true
+---
+
+# Game Development Rules
+
+## Game Architecture
+- **Component-Based Design**: Use component-based architecture for flexibility
+- **State Management**: Implement proper game state management
+- **Event System**: Create robust event systems for game communication
+- **Scene Management**: Efficient scene loading and memory management
+
+## Performance Optimization
+- **Frame Rate**: Maintain consistent 60 FPS on target platforms
+- **Memory Management**: Efficient object pooling and garbage collection
+- **Asset Optimization**: Optimize textures, models, and audio assets
+- **LOD Systems**: Implement Level of Detail for distant objects
+
+## Gameplay Programming
+- **Input Handling**: Responsive and configurable input systems
+- **Physics**: Proper physics simulation and collision detection
+- **AI Behavior**: Implement intelligent and engaging AI systems
+- **Game Balance**: Create balanced gameplay mechanics
+
+## User Interface
+- **UI/UX Design**: Intuitive and accessible user interfaces
+- **Menu Systems**: Smooth navigation between game screens
+- **HUD Elements**: Clear and non-intrusive heads-up displays
+- **Localization**: Support for multiple languages and regions
+
+## Audio & Visual
+- **Audio Design**: Spatial audio, music systems, and sound effects
+- **Visual Effects**: Particle systems, shaders, and post-processing
+- **Animation**: Smooth character and object animations
+- **Lighting**: Dynamic lighting systems for atmosphere
+
+## Multiplayer & Networking
+- **Network Architecture**: Reliable multiplayer networking
+- **Synchronization**: Proper game state synchronization
+- **Latency Handling**: Compensate for network latency
+- **Anti-Cheat**: Implement server-side validation
+
+## Testing & Quality Assurance
+- **Game Testing**: Comprehensive gameplay testing
+- **Performance Testing**: Test on various hardware configurations
+- **Bug Tracking**: Systematic bug reporting and resolution
+- **Playtesting**: Regular playtesting with target audience
+
+## Platform Optimization
+- **Cross-Platform**: Optimize for different platforms and devices
+- **Platform Features**: Utilize platform-specific features appropriately
+- **Store Requirements**: Meet platform store requirements and guidelines
+- **Performance Targets**: Achieve performance targets on all platforms
+
+## Game Design Principles
+- **Player Experience**: Focus on engaging and fun player experiences
+- **Progression Systems**: Meaningful progression and reward systems
+- **Accessibility**: Make games accessible to players with disabilities
+- **Monetization**: Ethical and player-friendly monetization strategies

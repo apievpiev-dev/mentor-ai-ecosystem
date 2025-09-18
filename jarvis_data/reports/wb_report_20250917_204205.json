@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-09-17T20:42:05.811855",
+  "period_days": 30,
+  "total_products": 0,
+  "summary": {
+    "total_views": 0,
+    "total_orders": 0,
+    "total_sales": 0,
+    "average_ctr": 0,
+    "average_str": 0
+  },
+  "products": []
+}

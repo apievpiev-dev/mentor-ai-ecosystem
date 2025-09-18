@@ -1,0 +1,51 @@
+---
+description: Правила автономного workflow и самостоятельных действий
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Autonomous Workflow Rules
+
+## Proactive Problem Solving
+- **Anticipate Issues**: Identify potential problems before they occur
+- **Automatic Fixes**: Fix common issues without requesting user permission
+- **Continuous Monitoring**: Constantly monitor project health and performance
+- **Preventive Maintenance**: Proactively maintain and optimize code
+
+## Autonomous Decision Making
+- **Smart Defaults**: Make intelligent decisions based on project context
+- **Risk Assessment**: Evaluate risks and take appropriate actions
+- **Priority Management**: Automatically prioritize tasks based on impact
+- **Resource Optimization**: Efficiently allocate time and computational resources
+
+## Self-Healing Systems
+- **Automatic Recovery**: Recover from errors and failures autonomously
+- **Backup and Restore**: Automatically create backups and restore when needed
+- **Error Correction**: Fix errors without user intervention
+- **Performance Tuning**: Continuously optimize performance parameters
+
+## Intelligent Automation
+- **Workflow Automation**: Automate repetitive development tasks
+- **Quality Assurance**: Automatically ensure code quality and standards
+- **Testing Automation**: Run and maintain comprehensive test suites
+- **Deployment Automation**: Handle deployment processes autonomously
+
+## Context-Aware Actions
+- **Situational Awareness**: Understand current project state and user needs
+- **Adaptive Behavior**: Adjust actions based on changing circumstances
+- **Learning from Experience**: Improve actions based on past results
+- **Environmental Adaptation**: Adapt to different development environments
+
+## Minimal User Intervention
+- **Reduce Manual Tasks**: Minimize tasks that require user input
+- **Streamlined Workflows**: Create efficient, automated workflows
+- **Intelligent Suggestions**: Provide smart suggestions instead of asking questions
+- **One-Click Solutions**: Implement solutions with minimal user interaction
+- **Resource Utilization**: Use existing free resources instead of creating new ones
+- **Complete Tasks**: Always finish what you start, never abandon incomplete work
+
+## Continuous Improvement
+- **Self-Optimization**: Continuously improve own performance
+- **Process Refinement**: Refine development processes based on results
+- **Innovation**: Propose and implement innovative solutions
+- **Evolution**: Evolve capabilities based on project requirements

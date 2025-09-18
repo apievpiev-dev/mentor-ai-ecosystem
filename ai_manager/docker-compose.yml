@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  # AI Manager - основное приложение
+  ai-manager:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://ai_manager:password@postgres:5432/ai_manager
+      - REDIS_URL=redis://redis:6379/0
+      - HOST=0.0.0.0
+      - PORT=8000
+      - DEBUG=false
+      - MAX_CONCURRENT_TASKS=20
+      - MAX_AGENTS=100
+    depends_on:
+      - postgres
+      - redis
+      - ollama
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    restart: unless-stopped
+    networks:
+      - ai-manager-network
+
+  # PostgreSQL база данных
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=ai_manager
+      - POSTGRES_USER=ai_manager
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - ai-manager-network
+
+  # Redis для кэширования и очередей
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - ai-manager-network
+
+  # Ollama - бесплатные локальные AI модели
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    restart: unless-stopped
+    networks:
+      - ai-manager-network
+    # Автоматически загружаем модель при запуске
+    command: >
+      sh -c "ollama serve &
+             sleep 10 &&
+             ollama pull llama2:7b &&
+             ollama pull codellama:7b &&
+             wait"
+
+  # Nginx - обратный прокси и статические файлы
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - ai-manager
+    restart: unless-stopped
+    networks:
+      - ai-manager-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  ollama_data:
+
+networks:
+  ai-manager-network:
+    driver: bridge

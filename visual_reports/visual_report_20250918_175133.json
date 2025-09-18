@@ -1,0 +1,45 @@
+{
+  "timestamp": "2025-09-18T17:51:33.719636",
+  "last_check": "2025-09-18T17:51:33.719634",
+  "pages": {
+    "main_dashboard": {
+      "status": "ok",
+      "status_code": 200,
+      "response_time": 0.003301382064819336,
+      "size": 77905,
+      "screenshot": "/home/mentor/visual_screenshots/main_dashboard_20250918_175133.png",
+      "timestamp": "2025-09-18T17:51:33.623156"
+    },
+    "chat": {
+      "status": "ok",
+      "status_code": 200,
+      "response_time": 0.0015828609466552734,
+      "size": 36501,
+      "screenshot": "/home/mentor/visual_screenshots/chat_20250918_175133.png",
+      "timestamp": "2025-09-18T17:51:33.664801"
+    },
+    "vision": {
+      "status": "ok",
+      "status_code": 200,
+      "response_time": 0.001461029052734375,
+      "size": 0,
+      "screenshot": "/home/mentor/visual_screenshots/vision_20250918_175133.png",
+      "timestamp": "2025-09-18T17:51:33.692019"
+    },
+    "visual_report": {
+      "status": "ok",
+      "status_code": 200,
+      "response_time": 0.0014879703521728516,
+      "size": 0,
+      "screenshot": "/home/mentor/visual_screenshots/visual_report_20250918_175133.png",
+      "timestamp": "2025-09-18T17:51:33.719413"
+    }
+  },
+  "summary": {
+    "total_pages": 4,
+    "working_pages": 4,
+    "error_pages": 0,
+    "success_rate": 100.0,
+    "avg_response_time": 0.001958310604095459
+  }
+}

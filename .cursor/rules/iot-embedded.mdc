@@ -1,0 +1,67 @@
+---
+description: Правила для IoT и embedded систем
+globs: ["**/*.ino", "**/*.cpp", "**/*.h", "**/*.py", "**/firmware/**", "**/embedded/**", "**/iot/**", "**/arduino/**"]
+alwaysApply: true
+---
+
+# IoT & Embedded Systems Rules
+
+## Hardware Integration
+- **Sensor Integration**: Proper sensor data collection and processing
+- **Actuator Control**: Reliable control of motors, relays, and other actuators
+- **Power Management**: Efficient power usage and battery life optimization
+- **Hardware Abstraction**: Create abstraction layers for hardware components
+
+## Communication Protocols
+- **WiFi/Bluetooth**: Reliable wireless communication implementation
+- **MQTT/CoAP**: Efficient IoT messaging protocols
+- **Serial Communication**: Proper serial communication handling
+- **Network Security**: Secure communication over networks
+
+## Data Processing
+- **Real-time Processing**: Handle real-time data processing requirements
+- **Data Validation**: Validate sensor data and handle outliers
+- **Edge Computing**: Process data at the edge when appropriate
+- **Data Compression**: Compress data for efficient transmission
+
+## Firmware Development
+- **Memory Management**: Efficient use of limited memory resources
+- **Interrupt Handling**: Proper interrupt service routine implementation
+- **Task Scheduling**: Implement real-time task scheduling
+- **Error Recovery**: Robust error handling and recovery mechanisms
+
+## Security & Privacy
+- **Device Security**: Secure device authentication and communication
+- **Data Encryption**: Encrypt sensitive data in transit and at rest
+- **Firmware Updates**: Secure over-the-air firmware update mechanisms
+- **Access Control**: Implement proper access control for devices
+
+## Performance Optimization
+- **Code Optimization**: Optimize code for limited resources
+- **Power Efficiency**: Minimize power consumption
+- **Response Time**: Meet real-time response requirements
+- **Resource Utilization**: Efficient use of CPU, memory, and storage
+
+## Testing & Validation
+- **Hardware Testing**: Test on actual hardware devices
+- **Environmental Testing**: Test under various environmental conditions
+- **Stress Testing**: Test system behavior under stress conditions
+- **Long-term Testing**: Validate long-term reliability and stability
+
+## Monitoring & Maintenance
+- **Health Monitoring**: Monitor device health and performance
+- **Remote Diagnostics**: Implement remote diagnostic capabilities
+- **Predictive Maintenance**: Use data for predictive maintenance
+- **Fault Detection**: Detect and report system faults
+
+## Scalability
+- **Device Management**: Manage large numbers of devices efficiently
+- **Cloud Integration**: Integrate with cloud platforms for data processing
+- **Load Balancing**: Distribute load across multiple devices
+- **Fleet Management**: Manage and update device fleets
+
+## User Interface
+- **Web Interfaces**: Create web-based device management interfaces
+- **Mobile Apps**: Develop mobile applications for device control
+- **Dashboard Design**: Design intuitive dashboards for monitoring
+- **Alert Systems**: Implement effective alert and notification systems

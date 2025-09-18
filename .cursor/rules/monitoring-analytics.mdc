@@ -1,0 +1,49 @@
+---
+description: Правила для мониторинга, аналитики и метрик
+globs: ["**/*monitor*", "**/*metric*", "**/*log*", "**/*analytics*", "**/*track*"]
+alwaysApply: true
+---
+
+# Monitoring & Analytics Rules
+
+## System Monitoring
+- **Performance Metrics**: Track response times, throughput, and resource usage
+- **Health Checks**: Implement comprehensive health check endpoints
+- **Alerting**: Set up intelligent alerting for critical issues
+- **Dashboards**: Create meaningful monitoring dashboards
+
+## User Analytics
+- **Behavior Tracking**: Monitor user interactions and patterns
+- **Feature Usage**: Track which features are used most frequently
+- **Performance Impact**: Measure how changes affect user experience
+- **Error Tracking**: Monitor and analyze user-facing errors
+
+## Application Metrics
+- **Business Metrics**: Track key performance indicators
+- **Technical Metrics**: Monitor system performance and reliability
+- **User Experience**: Measure user satisfaction and engagement
+- **Conversion Tracking**: Monitor user journey completion rates
+
+## Logging Standards
+- **Structured Logging**: Use consistent, structured log formats
+- **Log Levels**: Implement appropriate log levels (DEBUG, INFO, WARN, ERROR)
+- **Context Preservation**: Include relevant context in log messages
+- **Log Aggregation**: Centralize logs for analysis and monitoring
+
+## Data Collection
+- **Privacy Compliance**: Respect user privacy and data protection regulations
+- **Data Minimization**: Collect only necessary data
+- **Consent Management**: Obtain proper consent for data collection
+- **Data Retention**: Implement appropriate data retention policies
+
+## Analysis & Insights
+- **Real-time Analytics**: Provide real-time insights into system performance
+- **Trend Analysis**: Identify patterns and trends in data
+- **Predictive Analytics**: Use data to predict future behavior and needs
+- **Actionable Insights**: Provide insights that lead to concrete actions
+
+## Reporting
+- **Automated Reports**: Generate regular reports on key metrics
+- **Custom Dashboards**: Create customizable dashboards for different stakeholders
+- **Alert Reports**: Provide detailed reports when issues occur
+- **Performance Reports**: Regular performance and optimization reports

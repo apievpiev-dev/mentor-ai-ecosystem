@@ -1,0 +1,43 @@
+---
+description: Правила для работы с внешними API и сервисами
+globs: ["**/*api*", "**/*service*", "**/*integration*", "**/*client*"]
+alwaysApply: true
+---
+
+# External APIs & Services Rules
+
+## API Design & Integration
+- **RESTful Standards**: Follow REST principles for API design
+- **Error Handling**: Implement robust error handling for external services
+- **Rate Limiting**: Respect API rate limits and implement proper throttling
+- **Authentication**: Secure API keys and tokens properly
+
+## Service Reliability
+- **Circuit Breakers**: Implement circuit breaker patterns for external services
+- **Retry Logic**: Intelligent retry mechanisms with exponential backoff
+- **Fallback Strategies**: Provide fallback options when external services fail
+- **Monitoring**: Track API performance and availability
+
+## Data Management
+- **Caching**: Cache API responses to reduce external calls
+- **Data Validation**: Validate all data from external sources
+- **Sanitization**: Clean and sanitize external data before use
+- **Backup**: Store critical external data locally when possible
+
+## Security Best Practices
+- **Secrets Management**: Never hardcode API keys or credentials
+- **HTTPS Only**: Always use encrypted connections for API calls
+- **Input Validation**: Validate all inputs to external APIs
+- **Audit Logging**: Log all external API interactions
+
+## Performance Optimization
+- **Async Operations**: Use asynchronous calls for external services
+- **Connection Pooling**: Reuse connections when possible
+- **Compression**: Use data compression for large API responses
+- **Batching**: Batch multiple API calls when supported
+
+## Error Recovery
+- **Graceful Degradation**: Continue operation when external services are unavailable
+- **User Notifications**: Inform users about service outages
+- **Automatic Recovery**: Attempt to recover from service failures
+- **Health Checks**: Monitor external service health

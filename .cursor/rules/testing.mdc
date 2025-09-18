@@ -1,0 +1,49 @@
+---
+description: Правила для тестирования и качества кода
+globs: ["**/*test*.py", "**/*test*.js", "**/*test*.ts", "**/tests/**", "**/spec/**", "**/__tests__/**"]
+alwaysApply: true
+---
+
+# Testing & Quality Rules
+
+## Testing Strategy
+- **Test Pyramid**: Unit tests (70%), Integration tests (20%), E2E tests (10%)
+- **Test-Driven Development**: Write tests before implementation when possible
+- **Behavior-Driven Development**: Use descriptive test names that explain behavior
+- **Continuous Testing**: Run tests on every change automatically
+
+## Unit Testing
+- **Coverage**: Aim for 80%+ code coverage on critical paths
+- **Isolation**: Each test should be independent and isolated
+- **Mocking**: Mock external dependencies appropriately
+- **Assertions**: Use clear, specific assertions with meaningful messages
+
+## Integration Testing
+- **API Testing**: Test all API endpoints with various scenarios
+- **Database Testing**: Test data persistence and retrieval
+- **Service Integration**: Test interactions between services
+- **Error Handling**: Test error scenarios and edge cases
+
+## End-to-End Testing
+- **User Journeys**: Test complete user workflows
+- **Cross-Browser**: Test on multiple browsers and devices
+- **Visual Testing**: Verify UI appearance and behavior
+- **Performance Testing**: Ensure acceptable response times
+
+## Test Automation
+- **CI/CD Integration**: Automatically run tests in pipeline
+- **Parallel Execution**: Run tests in parallel for speed
+- **Test Data Management**: Use consistent test data setup
+- **Flaky Test Handling**: Identify and fix unreliable tests
+
+## Quality Assurance
+- **Code Reviews**: Peer review all changes
+- **Static Analysis**: Use linting and static analysis tools
+- **Security Testing**: Include security vulnerability checks
+- **Performance Monitoring**: Track performance metrics continuously
+
+## Test Documentation
+- **Test Plans**: Document testing strategies and approaches
+- **Test Cases**: Document complex test scenarios
+- **Results Reporting**: Generate clear test result reports
+- **Maintenance**: Keep tests updated with code changes

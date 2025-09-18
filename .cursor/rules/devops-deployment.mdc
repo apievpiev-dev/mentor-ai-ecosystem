@@ -1,0 +1,43 @@
+---
+description: Правила для DevOps, CI/CD и развертывания
+globs: ["**/Dockerfile*", "**/*.yml", "**/*.yaml", "**/docker-compose*", "**/.github/**", "**/k8s/**", "**/kubernetes/**"]
+alwaysApply: true
+---
+
+# DevOps & Deployment Rules
+
+## Containerization
+- **Docker Best Practices**: Multi-stage builds, minimal base images, security scanning
+- **Kubernetes**: Proper resource limits, health checks, rolling deployments
+- **Microservices**: Service discovery, load balancing, circuit breakers
+- **Environment Parity**: Consistent environments across dev/staging/prod
+
+## CI/CD Pipeline
+- **Automated Testing**: Run tests on every commit and PR
+- **Code Quality**: Linting, formatting, security scanning
+- **Build Optimization**: Parallel builds, caching, artifact management
+- **Deployment Strategy**: Blue-green, canary, or rolling deployments
+
+## Infrastructure as Code
+- **Version Control**: All infrastructure changes in version control
+- **Idempotency**: Infrastructure changes should be repeatable
+- **Environment Management**: Separate configurations for each environment
+- **Monitoring**: Comprehensive logging, metrics, and alerting
+
+## Security & Compliance
+- **Secrets Management**: Never store secrets in code, use proper secret management
+- **Access Control**: Principle of least privilege, RBAC
+- **Network Security**: VPCs, firewalls, encrypted communications
+- **Compliance**: Follow security standards and regulatory requirements
+
+## Monitoring & Observability
+- **Application Metrics**: Performance, business, and custom metrics
+- **Logging**: Structured logging, log aggregation, log analysis
+- **Tracing**: Distributed tracing for microservices
+- **Alerting**: Proactive alerts for issues and anomalies
+
+## Performance & Scalability
+- **Auto-scaling**: Horizontal and vertical scaling based on metrics
+- **Load Testing**: Regular performance testing and capacity planning
+- **Caching**: Multi-level caching strategies
+- **CDN**: Content delivery optimization

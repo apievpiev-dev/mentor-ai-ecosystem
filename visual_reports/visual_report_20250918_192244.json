@@ -1,0 +1,39 @@
+{
+  "timestamp": "2025-09-18T19:22:44.034555",
+  "last_check": "2025-09-18T19:22:44.034553",
+  "pages": {
+    "main_dashboard": {
+      "status": "ok",
+      "status_code": 200,
+      "response_time": 0.0017876625061035156,
+      "size": 19383,
+      "screenshot": "/home/mentor/visual_screenshots/main_dashboard_20250918_192244.png",
+      "timestamp": "2025-09-18T19:22:44.030290"
+    },
+    "chat": {
+      "status": "error",
+      "status_code": 404,
+      "response_time": 0.001598358154296875,
+      "timestamp": "2025-09-18T19:22:44.032175"
+    },
+    "vision": {
+      "status": "error",
+      "status_code": 404,
+      "response_time": 0.0010528564453125,
+      "timestamp": "2025-09-18T19:22:44.033388"
+    },
+    "visual_report": {
+      "status": "error",
+      "status_code": 404,
+      "response_time": 0.00090789794921875,
+      "timestamp": "2025-09-18T19:22:44.034432"
+    }
+  },
+  "summary": {
+    "total_pages": 4,
+    "working_pages": 1,
+    "error_pages": 3,
+    "success_rate": 25.0,
+    "avg_response_time": 0.0017876625061035156
+  }
+}

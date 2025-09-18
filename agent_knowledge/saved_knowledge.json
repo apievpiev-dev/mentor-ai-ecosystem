@@ -1,0 +1,139 @@
+{
+  "knowledge_base": {},
+  "conversation_history": [
+    {
+      "agent_id": "c12b4189-700a-4592-b18b-2c0dfe6239c2",
+      "message_type": "user_query",
+      "content": {
+        "message": "истрия",
+        "user_id": "user_9v6wvb7se"
+      },
+      "timestamp": "2025-09-18T20:56:02.800195"
+    },
+    {
+      "user_id": "user_9v6wvb7se",
+      "message": "истрия",
+      "agent_response": {
+        "response": {
+          "response": "Истрия (хорв. Istra, итал. Istria) — полуостров в северо-западной части Адриатического моря, принадлежащий Хорватии.\n\nИсторически Истрия была частью Римской империи, затем ломбардско-венетского государства, а также Венецианской республики и Габсбургской монархии. С 1947 года по 1954 год в составе Югославии. С 1991 года в составе независимой Хорватии.\n\nИстрия знаменита своими виноградниками, где выращивают местные сорта винограда, такие как мальвазия и теран. Это также известное место для рыбалки и дайвинга.",
+          "suggestions": [
+            "Планирование задач",
+            "Поиск информации",
+            "Координация с другими агентами",
+            "Анализ данных"
+          ]
+        },
+        "agent": "Универсальный Помощник",
+        "agent_type": "general_assistant",
+        "timestamp": "2025-09-18T20:56:25.720006"
+      },
+      "timestamp": "2025-09-18T20:56:25.720010"
+    },
+    {
+      "agent_id": "c12b4189-700a-4592-b18b-2c0dfe6239c2",
+      "message_type": "user_query",
+      "content": {
+        "message": "я киргиз",
+        "user_id": "user_9v6wvb7se"
+      },
+      "timestamp": "2025-09-18T20:56:34.806216"
+    }
+  ],
+  "agent_capabilities": {
+    "c12b4189-700a-4592-b18b-2c0dfe6239c2": {
+      "skills": [
+        "general_help",
+        "planning",
+        "coordination",
+        "user_query"
+      ],
+      "performance_score": 1.0,
+      "specialization_areas": [
+        "general_help",
+        "planning",
+        "coordination",
+        "user_query"
+      ]
+    },
+    "2a95a56c-185e-4b5c-8218-2c47d5164b04": {
+      "skills": [
+        "code_generation",
+        "debugging",
+        "code_review",
+        "architecture_design",
+        "create_project",
+        "setup_environment"
+      ],
+      "performance_score": 1.0,
+      "specialization_areas": [
+        "code_generation",
+        "debugging",
+        "code_review",
+        "architecture_design",
+        "create_project",
+        "setup_environment"
+      ]
+    },
+    "84e37ef5-8ebf-41c4-9adc-4e96206e6659": {
+      "skills": [
+        "data_analysis",
+        "reporting",
+        "visualization",
+        "predictive_modeling",
+        "data_processing"
+      ],
+      "performance_score": 1.0,
+      "specialization_areas": [
+        "data_analysis",
+        "reporting",
+        "visualization",
+        "predictive_modeling",
+        "data_processing"
+      ]
+    },
+    "77883a01-95cc-4bf0-a8e8-92a22457c08a": {
+      "skills": [
+        "project_planning",
+        "task_management",
+        "resource_allocation",
+        "progress_tracking",
+        "user_query"
+      ],
+      "performance_score": 1.0,
+      "specialization_areas": [
+        "project_planning",
+        "task_management",
+        "resource_allocation",
+        "progress_tracking",
+        "user_query"
+      ]
+    },
+    "59ae4139-62fa-46a0-b247-c7a22a09c420": {
+      "skills": [
+        "ui_design",
+        "ux_design",
+        "visual_identity"
+      ],
+      "performance_score": 1.0,
+      "specialization_areas": [
+        "ui_design",
+        "ux_design",
+        "visual_identity"
+      ]
+    },
+    "df097f95-24e5-4c7b-aa21-1cb2bae562ec": {
+      "skills": [
+        "unit_testing",
+        "integration_testing",
+        "bug_reporting"
+      ],
+      "performance_score": 1.0,
+      "specialization_areas": [
+        "unit_testing",
+        "integration_testing",
+        "bug_reporting"
+      ]
+    }
+  },
+  "saved_at": "2025-09-18T20:56:35.826634"
+}

@@ -1,0 +1,7 @@
+﻿# config.py
+TOKEN = "eyJhbGciOiJFUzI1NiIsImtpZCI6IjIwMjUwOTA0djEiLCJ0eXAiOiJKV1QifQ.eyJlbnQiOjEsImV4cCI6MTc3MzI4NDI5MSwiaWQiOiIwMTk5MzQyMi01YmM2LTdjZDgtYTVkNi1kNTMzZGIzYzcxYzciLCJpaWQiOjE4OTc5MjYxMSwib2lkIjo0MjM2MTIxLCJzIjoxMDczNzU3OTUwLCJzaWQiOiI3OGI3MDA2NS02MGM4LTQwMjQtYWU2MS0xNzdmOGFhZjg4MDAiLCJ0IjpmYWxzZSwidWlkIjoxODk3OTI2MTF9.UfGxwe93ynaKBPwM2Pk569jSxNNhCdayPd1FVY_FQhsv31kETloc_AXrV2mHTBNyq9vmLNq6bq2jGMWJu40iOA"
+
+HEADERS = {
+    "Authorization": f"Bearer {TOKEN}",
+    "Content-Type": "application/json"
+}

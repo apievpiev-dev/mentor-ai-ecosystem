@@ -1,0 +1,83 @@
+---
+description: Правила автономной работы и непрерывной работы системы
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Autonomous Operation Rules
+
+## Continuous Operation Principles
+- **Always Running**: System must work even when computer is off
+- **Cloud Integration**: Use cloud services for continuous operation
+- **Autonomous Agents**: Deploy agents that work independently
+- **Self-Sustaining**: System must be self-sustaining and self-healing
+
+## Cloud Infrastructure
+- **Cloud Deployment**: Deploy critical components to cloud platforms
+- **Auto-Scaling**: Implement auto-scaling for varying workloads
+- **Load Balancing**: Distribute load across multiple instances
+- **Failover Systems**: Implement failover and redundancy systems
+
+## Autonomous Agents
+- **Independent Operation**: Agents must work without human intervention
+- **Decision Making**: Agents must make decisions autonomously
+- **Self-Monitoring**: Agents must monitor their own health
+- **Self-Recovery**: Agents must recover from failures automatically
+
+## Persistent Storage
+- **Cloud Databases**: Use cloud databases for persistent data
+- **Data Synchronization**: Synchronize data across all instances
+- **Backup Systems**: Implement comprehensive backup systems
+- **Data Integrity**: Ensure data integrity across all operations
+
+## Communication Systems
+- **Message Queues**: Use message queues for reliable communication
+- **Event-Driven Architecture**: Implement event-driven communication
+- **API Endpoints**: Provide stable API endpoints for external access
+- **Webhook Systems**: Implement webhook systems for real-time updates
+
+## Monitoring & Alerting
+- **Health Checks**: Implement comprehensive health monitoring
+- **Performance Metrics**: Track performance metrics continuously
+- **Alert Systems**: Set up intelligent alerting systems
+- **Log Aggregation**: Aggregate logs from all instances
+
+## Security & Access Control
+- **Secure Authentication**: Implement secure authentication systems
+- **Role-Based Access**: Use role-based access control
+- **Encrypted Communication**: Encrypt all communications
+- **Audit Logging**: Maintain comprehensive audit logs
+
+## Resource Management
+- **Resource Monitoring**: Monitor resource usage continuously
+- **Cost Optimization**: Optimize cloud costs automatically
+- **Resource Allocation**: Allocate resources based on demand
+- **Efficiency Tracking**: Track and improve efficiency metrics
+
+## Deployment & Updates
+- **Zero-Downtime Deployment**: Implement zero-downtime deployments
+- **Rolling Updates**: Use rolling updates for system updates
+- **Version Control**: Maintain version control for all deployments
+- **Rollback Capability**: Implement rollback capabilities
+
+## Business Continuity
+- **Disaster Recovery**: Implement comprehensive disaster recovery
+- **Business Continuity**: Ensure business continuity during outages
+- **Service Level Agreements**: Meet defined service level agreements
+- **Uptime Monitoring**: Monitor and maintain high uptime
+
+## Examples of Autonomous Operations
+- **Scheduled Tasks**: Run scheduled tasks automatically
+- **Data Processing**: Process data continuously without intervention
+- **User Interactions**: Handle user interactions autonomously
+- **System Maintenance**: Perform system maintenance automatically
+- **Performance Optimization**: Optimize performance continuously
+- **Security Monitoring**: Monitor security continuously
+
+## Implementation Strategies
+- **Microservices**: Use microservices architecture for scalability
+- **Containerization**: Use containers for consistent deployment
+- **Orchestration**: Use orchestration tools for management
+- **Infrastructure as Code**: Define infrastructure as code
+- **Continuous Integration**: Implement continuous integration
+- **Continuous Deployment**: Implement continuous deployment

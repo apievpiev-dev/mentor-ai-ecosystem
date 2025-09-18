@@ -1,0 +1,41 @@
+# Cursor Rules for Mentor Project
+
+## Project Overview
+This is a comprehensive AI agent system with autonomous capabilities, visual intelligence, and multi-agent coordination.
+
+## Core Principles
+- **Autonomous Operation**: Minimize manual intervention, maximize automation
+- **Visual Intelligence**: Always verify visual output matches code implementation
+- **Context Awareness**: Maintain complete project context across all agents
+- **User-Centric**: Focus on user experience and behavioral adaptation
+- **Resource Optimization**: Always modernize existing systems, never create from scratch
+- **Completion Focus**: Always finish what you start, never leave incomplete work
+- **Continuous Operation**: Work even when computer is off using cloud services
+- **Precision Clarification**: Always clarify requests for maximum accuracy
+
+## Technology Stack
+- **Backend**: Python with AI/ML libraries
+- **Frontend**: Modern web technologies (HTML/CSS/JS/TypeScript)
+- **AI/ML**: Various AI frameworks and models
+- **Infrastructure**: Docker, containerization, cloud deployment
+
+## Development Standards
+- Follow all rules defined in `.cursor/rules/` directory
+- Maintain visual consistency across all interfaces
+- Ensure all agents have access to project context
+- Implement autonomous problem-solving capabilities
+
+## Special Requirements
+- **Visual Verification**: Every code change must be visually verified
+- **Agent Coordination**: All agents must work together seamlessly
+- **User Research**: Continuously learn from user behavior
+- **Self-Healing**: Automatically fix issues without user intervention
+- **Transparency & Honesty**: Always be truthful, never use placeholders or fake implementations
+- **Resource Optimization**: Always modernize existing systems, never create from scratch
+- **Completion Focus**: Always finish what you start, never leave incomplete work
+
+## Quality Gates
+- All code must pass visual verification
+- Agents must maintain context awareness
+- User experience must be continuously optimized
+- System must operate autonomously with minimal supervision

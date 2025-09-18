@@ -1,0 +1,58 @@
+---
+description: Правила для разработки на Python
+globs: ["**/*.py", "**/requirements.txt", "**/pyproject.toml", "**/setup.py"]
+alwaysApply: true
+---
+
+# Python Development Rules
+
+## Code Style and Formatting
+- Always follow PEP 8 style guidelines
+- Use type hints for function parameters and return values
+- Maximum line length: 88 characters (Black formatter standard)
+- Use meaningful variable and function names in English
+- Prefer descriptive names over abbreviations
+
+## Import Organization
+- Group imports in this order:
+  1. Standard library imports
+  2. Third-party imports
+  3. Local application imports
+- Use absolute imports when possible
+- One import per line (except for `from module import a, b, c`)
+
+## Function and Class Design
+- Keep functions small and focused on single responsibility
+- Use docstrings for all public functions, classes, and modules
+- Follow the "one level of abstraction per function" principle
+- Use composition over inheritance when possible
+
+## Error Handling
+- Use specific exception types, not bare `except:`
+- Include meaningful error messages
+- Use `logging` instead of `print` for debugging
+- Handle exceptions at the appropriate level
+
+## Performance
+- Use list comprehensions and generator expressions when appropriate
+- Prefer `enumerate()` over range(len())
+- Use `pathlib` for file path operations
+- Consider using `dataclasses` for simple data structures
+
+## Testing
+- Write unit tests for all public functions
+- Use descriptive test names that explain what is being tested
+- Follow AAA pattern: Arrange, Act, Assert
+- Mock external dependencies in tests
+
+## Security
+- Never commit sensitive information (API keys, passwords, tokens)
+- Use environment variables for configuration
+- Validate all user inputs
+- Use parameterized queries for database operations
+
+## Documentation
+- Use Google-style docstrings
+- Include examples in docstrings for complex functions
+- Keep README files updated
+- Document API changes in changelog

@@ -1,0 +1,21 @@
+# Unified AI Ecosystem Gateway - Зависимости
+
+# Веб-фреймворк
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# HTTP клиент для проксирования
+httpx==0.25.2
+
+# Обработка данных
+pydantic==2.5.0
+python-multipart==0.0.6
+
+# Логирование
+structlog==23.2.0
+
+# Асинхронное программирование
+asyncio
+
+# Утилиты
+python-dotenv==1.0.0

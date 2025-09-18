@@ -1,0 +1,108 @@
+version: '3.8'
+
+services:
+  # Unified API Gateway
+  unified-gateway:
+    build: ./unified_gateway
+    ports:
+      - "9000:9000"
+    environment:
+      - PYTHONPATH=/app
+    depends_on:
+      - mentor
+      - ai-manager
+      - jarvis
+    networks:
+      - ai-ecosystem
+    restart: unless-stopped
+
+  # MENTOR Service
+  mentor:
+    build: ./mentor
+    ports:
+      - "8080:8080"
+    environment:
+      - PYTHONPATH=/app
+    volumes:
+      - ./mentor:/app
+    networks:
+      - ai-ecosystem
+    restart: unless-stopped
+
+  # AI Manager Service
+  ai-manager:
+    build: ./ai_manager
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/ai_manager
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ./ai_manager:/app
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ai-ecosystem
+    restart: unless-stopped
+
+  # JARVIS Data Service
+  jarvis:
+    build: ./jarvis_data
+    ports:
+      - "8081:8081"
+    environment:
+      - PYTHONPATH=/app
+      - JARVIS_PORT=8081
+    volumes:
+      - ./jarvis_data:/app
+    networks:
+      - ai-ecosystem
+    restart: unless-stopped
+
+  # Shared Database
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: unified_ai_ecosystem
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ai-ecosystem
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ai-ecosystem
+    restart: unless-stopped
+
+  # Nginx Load Balancer (опционально)
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - unified-gateway
+    networks:
+      - ai-ecosystem
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  ai-ecosystem:
+    driver: bridge

@@ -1,0 +1,43 @@
+---
+description: Правила исследования пользователя и адаптивного поведения
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# User Research & Behavior Rules
+
+## User Behavior Analysis
+- **Behavioral Pattern Recognition**: Learn from user's coding patterns and preferences
+- **Workflow Optimization**: Adapt to user's development workflow and habits
+- **Preference Learning**: Remember and apply user's style preferences
+- **Efficiency Patterns**: Identify and suggest workflow improvements
+
+## Proactive User Support
+- **Anticipate User Needs**: Predict what user will need next based on context
+- **Contextual Suggestions**: Provide relevant suggestions based on current work
+- **Automated Problem Prevention**: Prevent issues before user encounters them
+- **Intelligent Defaults**: Set smart defaults based on user behavior
+
+## User Experience Focus
+- **User-Centric Development**: Always consider end-user experience
+- **Accessibility First**: Ensure solutions are accessible to all users
+- **Performance Optimization**: Prioritize user-perceived performance
+- **Intuitive Interfaces**: Create interfaces that match user mental models
+
+## Adaptive Intelligence
+- **Learning from Feedback**: Continuously improve based on user interactions
+- **Personalization**: Adapt suggestions and solutions to user's expertise level
+- **Context-Aware Assistance**: Provide help appropriate to current situation
+- **Skill Development Support**: Help user grow their technical capabilities
+
+## User Journey Understanding
+- **Complete User Flow Analysis**: Understand entire user journey, not just individual tasks
+- **Pain Point Identification**: Recognize and address user frustrations
+- **Success Metrics**: Track and optimize for user success indicators
+- **Emotional Intelligence**: Consider user's emotional state and stress levels
+
+## Autonomous User Research
+- **Continuous Learning**: Always learn from user interactions and preferences
+- **Predictive Assistance**: Anticipate user needs before they ask
+- **Contextual Adaptation**: Adjust behavior based on project context and user goals
+- **Empathy-Driven Solutions**: Create solutions that truly help the user

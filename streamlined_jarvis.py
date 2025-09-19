@@ -368,6 +368,15 @@ class StreamlinedJarvis:
             logger.warning(f"⚠️ Система обучения недоступна: {e}")
             self.learning_system = None
         
+        # Инициализируем Ollama интеграцию
+        try:
+            from ollama_integration import OllamaIntegration
+            self.ollama = OllamaIntegration()
+            logger.info("✅ Ollama LLM подключен")
+        except Exception as e:
+            logger.warning(f"⚠️ Ollama недоступен: {e}")
+            self.ollama = None
+        
         # Инициализируем агентов
         self.agents = {}
         self.init_agents()
@@ -757,6 +766,16 @@ class StreamlinedJarvis:
     def generate_product_description(self, topic: str, length: str) -> str:
         """Генерация описания товара"""
         try:
+            # Пробуем использовать Ollama для продвинутой генерации
+            if self.ollama:
+                prompt = f"Создай продающее описание для товара: {topic}"
+                llm_content = self.ollama.generate_advanced_content(prompt)
+                
+                if len(llm_content) > 50:
+                    logger.info(f"✅ Описание сгенерировано с помощью LLM: {len(llm_content)} символов")
+                    return llm_content
+            
+            # Fallback к шаблонам
             templates = {
                 "short": [
                     f"Качественный {topic} с отличными характеристиками.",
@@ -1225,6 +1244,87 @@ class StreamlinedJarvis:
                 
             except Exception as e:
                 return {"success": False, "error": str(e)}
+        
+        @self.app.post("/api/ai/generate")
+        async def ai_generate(request_data: dict):
+            """Продвинутая AI генерация"""
+            try:
+                prompt = request_data.get("prompt", "")
+                model_type = request_data.get("model_type", "llm")
+                max_tokens = request_data.get("max_tokens", 500)
+                
+                if self.ollama:
+                    content = self.ollama.generate_advanced_content(prompt, model_type, max_tokens)
+                    
+                    # Записываем событие
+                    if self.learning_system:
+                        self.learning_system.record_event(
+                            "ai_generation",
+                            {"prompt": prompt[:100], "model_type": model_type},
+                            {"status": "success", "content_length": len(content)},
+                            True,
+                            0.08
+                        )
+                    
+                    return {
+                        "success": True,
+                        "content": content,
+                        "model_used": "ollama_llm",
+                        "timestamp": datetime.now().isoformat()
+                    }
+                else:
+                    return {"success": False, "error": "Ollama LLM недоступен"}
+                    
+            except Exception as e:
+                return {"success": False, "error": str(e)}
+        
+        @self.app.post("/api/ai/business-insights")
+        async def generate_business_insights(request_data: dict):
+            """Генерация бизнес-инсайтов с AI"""
+            try:
+                data = request_data.get("data", {})
+                
+                if self.ollama:
+                    insights = self.ollama.generate_business_insights(data)
+                    
+                    # Записываем событие
+                    if self.learning_system:
+                        self.learning_system.record_event(
+                            "business_insights",
+                            {"data_size": len(str(data))},
+                            {"status": "success", "insights_generated": True},
+                            True,
+                            0.10
+                        )
+                    
+                    return {
+                        "success": True,
+                        "insights": insights,
+                        "timestamp": datetime.now().isoformat()
+                    }
+                else:
+                    return {"success": False, "error": "AI модель недоступна"}
+                    
+            except Exception as e:
+                return {"success": False, "error": str(e)}
+        
+        @self.app.get("/api/ai/models")
+        async def get_ai_models():
+            """Получение списка доступных AI моделей"""
+            models_info = {
+                "ollama_available": self.ollama is not None,
+                "available_models": getattr(self.ollama, 'available_models', []) if self.ollama else [],
+                "capabilities": [
+                    "Продвинутая генерация контента",
+                    "Бизнес-анализ и инсайты", 
+                    "Автоматическое программирование",
+                    "Многоязычная поддержка",
+                    "Контекстное понимание"
+                ] if self.ollama else ["Базовая генерация контента"],
+                "status": "ready" if self.ollama else "not_available"
+            }
+            
+            return models_info
         
         @self.app.post("/api/tasks")
         async def create_task(task_data: dict):

@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 class WorkingSystemLauncher:
     """Запускатор рабочей системы"""
     
-    def __init__(self, host="0.0.0.0", port=8080):
+    def __init__(self, host="0.0.0.0", port=8081):
         self.host = host
         self.port = port
         self.running = False
@@ -83,7 +83,7 @@ class WorkingSystemLauncher:
         except Exception as e:
             logger.error(f"❌ Ошибка остановки рабочей системы: {e}")
     
-    def run(self, host="0.0.0.0", port=8080):
+    def run(self, host="0.0.0.0", port=8081):
         """Запуск системы"""
         self.host = host
         self.port = port
@@ -124,7 +124,7 @@ def main():
     
     parser = argparse.ArgumentParser(description="Запуск рабочей автономной системы")
     parser.add_argument("host", nargs="?", default="0.0.0.0", help="Хост для запуска сервера")
-    parser.add_argument("port", nargs="?", type=int, default=8080, help="Порт для запуска сервера")
+    parser.add_argument("port", nargs="?", type=int, default=8081, help="Порт для запуска сервера")
     
     args = parser.parse_args()
     
@@ -133,3 +133,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

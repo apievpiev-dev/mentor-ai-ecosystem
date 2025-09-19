@@ -28,10 +28,11 @@ class AIResponse:
 class OllamaEngine:
     """Движок для работы с Ollama"""
     
-    def __init__(self, base_url: str = "http://localhost:11434", default_model: str = "neural-chat:latest"):
+    def __init__(self, base_url: str = "http://localhost:11434", default_model: str = "llama2:latest"):
         self.base_url = base_url
         self.default_model = default_model
         self.available_models = []
+        self.response_cache = {}  # Кэш для быстрых ответов
         self._load_models()
     
     def _load_models(self):
@@ -49,13 +50,26 @@ class OllamaEngine:
     
     async def generate_response(self, prompt: str, model: str = None, 
                               system_prompt: str = None, retry_count: int = 1, **kwargs) -> AIResponse:
-        """Генерация ответа от модели с retry механизмом"""
+        """Генерация ответа от модели с retry механизмом и кэшированием"""
         start_time = time.time()
         model = model or self.default_model
         
+        # Проверяем кэш
+        cache_key = f"{prompt[:100]}_{model}_{kwargs.get('temperature', 0.7)}_{kwargs.get('max_tokens', 1000)}"
+        if cache_key in self.response_cache:
+            logger.info("✅ Используем кэшированный ответ")
+            cached_response = self.response_cache[cache_key]
+            cached_response.response_time = 0.01  # Быстрый ответ из кэша
+            return cached_response
+        
         for attempt in range(retry_count + 1):
             try:
-                return await self._make_request(prompt, model, system_prompt, start_time, **kwargs)
+                response = await self._make_request(prompt, model, system_prompt, start_time, **kwargs)
+                # Сохраняем успешный ответ в кэш
+                if response.success and response.content:
+                    self.response_cache[cache_key] = response
+                    logger.info("💾 Ответ сохранен в кэш")
+                return response
             except requests.exceptions.Timeout:
                 if attempt < retry_count:
                     logger.warning(f"⏰ Попытка {attempt + 1} неудачна, повторяем...")
@@ -89,15 +103,18 @@ class OllamaEngine:
     async def _make_request(self, prompt: str, model: str, system_prompt: str, start_time: float, **kwargs) -> AIResponse:
         """Выполнение HTTP запроса к Ollama"""
         
-        # Подготавливаем данные для запроса
+        # Подготавливаем данные для запроса с оптимизированными параметрами
         data = {
             "model": model,
             "prompt": prompt,
             "stream": False,
             "options": {
-                "temperature": kwargs.get("temperature", 0.7),
-                "top_p": kwargs.get("top_p", 0.9),
-                "max_tokens": kwargs.get("max_tokens", 1000)
+                "temperature": kwargs.get("temperature", 0.5),  # Более детерминированные ответы
+                "top_p": kwargs.get("top_p", 0.8),  # Ограниченная выборка для скорости
+                "top_k": 20,  # Ограничение выбора токенов
+                "repeat_penalty": 1.1,  # Предотвращение повторов
+                "num_ctx": 1024,  # Уменьшенное контекстное окно
+                "num_predict": kwargs.get("max_tokens", 100)  # Ограничение генерации
             }
         }
         
@@ -213,14 +230,19 @@ class OpenAIEngine:
                 "model": model,
                 "messages": messages,
                 "temperature": kwargs.get("temperature", 0.7),
-                "max_tokens": kwargs.get("max_tokens", 1000)
+                "max_tokens": kwargs.get("max_tokens", 1000),
+                "num_ctx": 1024,  # Уменьшенное контекстное окно
+                "num_predict": kwargs.get("max_tokens", 1000),  # Ограничение генерации
+                "repeat_penalty": 1.1,  # Предотвращение повторов
+                "top_k": 20,  # Ограничение выбора токенов
+                "top_p": 0.9  # Ядерная выборка
             }
             
             response = requests.post(
                 f"{self.base_url}/chat/completions",
                 headers=headers,
                 json=data,
-                timeout=90  # Восстановлен стабильный таймаут
+                timeout=150  # Увеличенный таймаут для стабильности
             )
             
             if response.status_code == 200:

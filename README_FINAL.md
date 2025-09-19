@@ -18,7 +18,7 @@ python start_multi_agent_system.py
 ## 🌐 Доступ к системе
 
 После запуска откройте браузер и перейдите по адресу:
-**http://localhost:8080**
+**http://localhost:8081**
 
 ## 🤖 Доступные Агенты
 
@@ -38,10 +38,10 @@ python start_multi_agent_system.py
 
 ## 📊 API Endpoints
 
-- **Главная страница**: http://localhost:8080
-- **Статус системы**: http://localhost:8080/api/system/status
-- **Список агентов**: http://localhost:8080/api/agents
-- **Отправка сообщения**: POST http://localhost:8080/api/chat/send
+- **Главная страница**: http://localhost:8081
+- **Статус системы**: http://localhost:8081/api/system/status
+- **Список агентов**: http://localhost:8081/api/agents
+- **Отправка сообщения**: POST http://localhost:8081/api/chat/send
 
 ## 🛑 Остановка системы
 

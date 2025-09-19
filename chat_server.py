@@ -366,7 +366,7 @@ async def get_status_page():
                     </div>
                     <div class="status-item">
                         <span class="status-label">Порт:</span>
-                        <span class="status-value">8080</span>
+                        <span class="status-value">8081</span>
                     </div>
                     <div class="status-item">
                         <span class="status-label">Протокол:</span>
@@ -1219,7 +1219,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "chat_server:app",
         host="0.0.0.0",
-        port=8080,
+        port=8081,
         reload=True,
         log_level="info"
     )

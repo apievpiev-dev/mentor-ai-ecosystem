@@ -43,3 +43,5 @@ echo "🌐 Веб-интерфейс: http://localhost:8080"
 echo "📊 API статуса: http://localhost:8080/api/system/status"
 echo "📝 Логи системы: tail -f real_ai_system.log"
 echo "🔧 Логи оптимизатора: tail -f ollama_optimizer.log"
+
+

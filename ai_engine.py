@@ -28,12 +28,15 @@ class AIResponse:
 class OllamaEngine:
     """Движок для работы с Ollama"""
     
-    def __init__(self, base_url: str = "http://localhost:11434", default_model: str = "llama2:latest"):
+    def __init__(self, base_url: str = "http://localhost:11434", default_model: str = "llama3.2:latest"):
         self.base_url = base_url
         self.default_model = default_model
         self.available_models = []
         self.response_cache = {}  # Кэш для быстрых ответов
+        self.model_performance = {}  # Метрики производительности моделей
+        self.auto_model_selection = True  # Автоматический выбор лучшей модели
         self._load_models()
+        self._initialize_performance_tracking()
     
     def _load_models(self):
         """Загрузить список доступных моделей"""
@@ -48,11 +51,94 @@ class OllamaEngine:
         except Exception as e:
             logger.error(f"❌ Ошибка загрузки моделей Ollama: {e}")
     
+    def _initialize_performance_tracking(self):
+        """Инициализация отслеживания производительности моделей"""
+        for model in self.available_models:
+            self.model_performance[model] = {
+                "total_requests": 0,
+                "successful_requests": 0,
+                "average_response_time": 0.0,
+                "average_tokens_per_second": 0.0,
+                "error_rate": 0.0,
+                "quality_score": 0.5  # Базовая оценка качества
+            }
+    
+    def _select_best_model(self, prompt: str, **kwargs) -> str:
+        """Автоматический выбор лучшей модели на основе метрик"""
+        if not self.auto_model_selection or not self.model_performance:
+            return self.default_model
+        
+        # Анализируем тип запроса
+        prompt_lower = prompt.lower()
+        
+        # Для кода предпочитаем модели с лучшим качеством
+        if any(word in prompt_lower for word in ["код", "программирование", "функция", "класс", "debug"]):
+            best_model = max(self.model_performance.keys(), 
+                           key=lambda m: self.model_performance[m]["quality_score"])
+        # Для быстрых ответов предпочитаем скорость
+        elif len(prompt) < 100:
+            best_model = min(self.model_performance.keys(), 
+                           key=lambda m: self.model_performance[m]["average_response_time"] or float('inf'))
+        else:
+            # Комбинированная оценка: качество * скорость * надежность
+            best_model = max(self.model_performance.keys(),
+                           key=lambda m: (
+                               self.model_performance[m]["quality_score"] * 
+                               (1 / max(self.model_performance[m]["average_response_time"], 0.1)) *
+                               (1 - self.model_performance[m]["error_rate"])
+                           ))
+        
+        logger.info(f"🤖 Автоматически выбрана модель: {best_model}")
+        return best_model
+    
+    def _update_model_performance(self, model: str, response: AIResponse):
+        """Обновление метрик производительности модели"""
+        if model not in self.model_performance:
+            self.model_performance[model] = {
+                "total_requests": 0,
+                "successful_requests": 0,
+                "average_response_time": 0.0,
+                "average_tokens_per_second": 0.0,
+                "error_rate": 0.0,
+                "quality_score": 0.5
+            }
+        
+        metrics = self.model_performance[model]
+        metrics["total_requests"] += 1
+        
+        if response.success:
+            metrics["successful_requests"] += 1
+            
+            # Обновляем среднее время ответа
+            old_avg = metrics["average_response_time"]
+            new_avg = (old_avg * (metrics["successful_requests"] - 1) + response.response_time) / metrics["successful_requests"]
+            metrics["average_response_time"] = new_avg
+            
+            # Обновляем токены в секунду
+            if response.response_time > 0:
+                tokens_per_sec = response.tokens_used / response.response_time
+                old_tps = metrics["average_tokens_per_second"]
+                new_tps = (old_tps * (metrics["successful_requests"] - 1) + tokens_per_sec) / metrics["successful_requests"]
+                metrics["average_tokens_per_second"] = new_tps
+            
+            # Простая оценка качества на основе длины ответа и времени
+            if len(response.content) > 50 and response.response_time < 30:
+                metrics["quality_score"] = min(1.0, metrics["quality_score"] + 0.01)
+        
+        # Обновляем коэффициент ошибок
+        metrics["error_rate"] = 1 - (metrics["successful_requests"] / metrics["total_requests"])
+    
     async def generate_response(self, prompt: str, model: str = None, 
                               system_prompt: str = None, retry_count: int = 1, **kwargs) -> AIResponse:
         """Генерация ответа от модели с retry механизмом и кэшированием"""
         start_time = time.time()
-        model = model or self.default_model
+        
+        # Автоматический выбор лучшей модели если не указана
+        if model is None:
+            model = self._select_best_model(prompt, **kwargs)
+        elif model not in self.available_models and self.available_models:
+            logger.warning(f"⚠️ Модель {model} недоступна, выбираем автоматически")
+            model = self._select_best_model(prompt, **kwargs)
         
         # Проверяем кэш
         cache_key = f"{prompt[:100]}_{model}_{kwargs.get('temperature', 0.7)}_{kwargs.get('max_tokens', 1000)}"
@@ -65,6 +151,8 @@ class OllamaEngine:
         for attempt in range(retry_count + 1):
             try:
                 response = await self._make_request(prompt, model, system_prompt, start_time, **kwargs)
+                # Обновляем метрики производительности
+                self._update_model_performance(model, response)
                 # Сохраняем успешный ответ в кэш
                 if response.success and response.content:
                     self.response_cache[cache_key] = response
@@ -156,6 +244,15 @@ class OllamaEngine:
         except:
             return False
     
+    def clear_cache(self):
+        """Очистка кэша ответов"""
+        self.response_cache.clear()
+        logger.info("🧹 Кэш ответов очищен")
+    
+    def get_model_performance(self) -> Dict[str, Any]:
+        """Получение статистики производительности моделей"""
+        return self.model_performance.copy()
+    
     def get_health_status(self) -> Dict[str, Any]:
         """Получение статуса здоровья AI движка"""
         try:
@@ -167,25 +264,31 @@ class OllamaEngine:
                     "status": "healthy",
                     "available_models": len(models),
                     "default_model": self.default_model,
-                    "response_time": response.elapsed.total_seconds()
+                    "response_time": response.elapsed.total_seconds(),
+                    "cache_size": len(self.response_cache),
+                    "auto_model_selection": self.auto_model_selection,
+                    "performance_metrics": self.model_performance
                 }
             else:
                 return {
                     "status": "unhealthy",
                     "error": f"HTTP {response.status_code}",
-                    "available_models": 0
+                    "available_models": 0,
+                    "cache_size": len(self.response_cache)
                 }
         except requests.exceptions.Timeout:
             return {
                 "status": "timeout",
                 "error": "Connection timeout",
-                "available_models": 0
+                "available_models": 0,
+                "cache_size": len(self.response_cache)
             }
         except Exception as e:
             return {
                 "status": "error",
                 "error": str(e),
-                "available_models": 0
+                "available_models": 0,
+                "cache_size": len(self.response_cache)
             }
 
 class OpenAIEngine:

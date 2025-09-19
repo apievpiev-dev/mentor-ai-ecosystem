@@ -1,0 +1,119 @@
+{
+  "timestamp": "2025-09-19T02:07:20.608991",
+  "tests": [
+    {
+      "name": "Web Interface Availability",
+      "description": "Проверка доступности веб-интерфейса",
+      "status": "passed",
+      "details": {
+        "status_code": 200,
+        "content_length": 16981,
+        "contains_neural_title": true,
+        "contains_dashboard": true,
+        "response_time": 0.004025
+      },
+      "timestamp": "2025-09-19T02:07:20.609018",
+      "message": "Веб-интерфейс доступен и содержит ожидаемый контент"
+    },
+    {
+      "name": "Screenshot Capture",
+      "description": "Проверка возможности захвата скриншота веб-страницы",
+      "status": "passed",
+      "details": {
+        "screenshot_path": "/workspace/visual_screenshots/visual_verification_20250919_020720.png",
+        "file_size": 43500,
+        "capture_method": "virtual"
+      },
+      "timestamp": "2025-09-19T02:07:20.658137",
+      "message": "Скриншот успешно создан: /workspace/visual_screenshots/visual_verification_20250919_020720.png"
+    },
+    {
+      "name": "API Endpoints",
+      "description": "Проверка работоспособности API endpoints",
+      "status": "passed",
+      "details": {
+        "endpoints": {
+          "/health": {
+            "status_code": 200,
+            "response_time": 0.001097,
+            "success": true,
+            "has_json": true,
+            "json_keys": [
+              "status",
+              "timestamp",
+              "neural_system_running"
+            ]
+          },
+          "/api/status": {
+            "status_code": 200,
+            "response_time": 0.001512,
+            "success": true,
+            "has_json": true,
+            "json_keys": [
+              "running",
+              "agent",
+              "task_queue_size",
+              "completed_tasks",
+              "performance_metrics"
+            ]
+          }
+        }
+      },
+      "timestamp": "2025-09-19T02:07:20.696260",
+      "message": "Все API endpoints работают корректно"
+    },
+    {
+      "name": "Neural System Functionality",
+      "description": "Проверка работоспособности нейронной системы",
+      "status": "passed",
+      "details": {
+        "task_id": "task_1758247640_0",
+        "task_added": true,
+        "system_running": true,
+        "completed_tasks": 1,
+        "performance_metrics": {
+          "total_tasks": 1,
+          "successful_tasks": 1,
+          "failed_tasks": 0,
+          "average_processing_time": 1.0015792846679688,
+          "uptime_start": "2025-09-19T02:05:22.262219"
+        }
+      },
+      "timestamp": "2025-09-19T02:07:20.699765",
+      "message": "Нейронная система работает корректно"
+    },
+    {
+      "name": "Visual-Code Correspondence",
+      "description": "Проверка соответствия кода и визуального вывода",
+      "status": "passed",
+      "details": {
+        "code_elements": {
+          "has_fastapi": true,
+          "has_websocket": true,
+          "has_neural_system_import": true,
+          "has_html_template": true,
+          "has_neural_dashboard": true,
+          "has_task_controls": true
+        },
+        "visual_elements": {
+          "has_neural_title": true,
+          "has_dashboard_cards": true,
+          "has_control_forms": true,
+          "has_websocket_script": true,
+          "has_status_updates": true
+        },
+        "correspondence_score": 2,
+        "total_checks": 2,
+        "correspondence_percentage": 100.0
+      },
+      "timestamp": "2025-09-19T02:07:23.707551",
+      "message": "Высокое соответствие кода и визуала: 2/2"
+    }
+  ],
+  "summary": {
+    "total_tests": 5,
+    "passed_tests": 5,
+    "failed_tests": 0,
+    "success_rate": 100.0
+  }
+}

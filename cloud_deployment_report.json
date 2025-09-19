@@ -1,0 +1,101 @@
+{
+  "timestamp": "2025-09-19T02:59:24.248396",
+  "global_infrastructure": {
+    "regions": 10,
+    "total_servers": 1140,
+    "total_capacity": 11400,
+    "deployed_agents": 7990
+  },
+  "regional_stats": {
+    "us-east-1": {
+      "location": "Virginia, USA",
+      "servers": 195,
+      "capacity": 1950,
+      "used": 975,
+      "load_percentage": 50.0,
+      "agents_deployed": 975
+    },
+    "us-west-2": {
+      "location": "Oregon, USA",
+      "servers": 145,
+      "capacity": 1450,
+      "used": 870,
+      "load_percentage": 60.0,
+      "agents_deployed": 870
+    },
+    "eu-west-1": {
+      "location": "Ireland, EU",
+      "servers": 175,
+      "capacity": 1750,
+      "used": 875,
+      "load_percentage": 50.0,
+      "agents_deployed": 875
+    },
+    "eu-central-1": {
+      "location": "Frankfurt, Germany",
+      "servers": 115,
+      "capacity": 1150,
+      "used": 920,
+      "load_percentage": 80.0,
+      "agents_deployed": 920
+    },
+    "ap-southeast-1": {
+      "location": "Singapore, Asia",
+      "servers": 95,
+      "capacity": 950,
+      "used": 950,
+      "load_percentage": 100.0,
+      "agents_deployed": 950
+    },
+    "ap-northeast-1": {
+      "location": "Tokyo, Japan",
+      "servers": 125,
+      "capacity": 1250,
+      "used": 1000,
+      "load_percentage": 80.0,
+      "agents_deployed": 1000
+    },
+    "ap-south-1": {
+      "location": "Mumbai, India",
+      "servers": 75,
+      "capacity": 750,
+      "used": 750,
+      "load_percentage": 100.0,
+      "agents_deployed": 750
+    },
+    "sa-east-1": {
+      "location": "São Paulo, Brazil",
+      "servers": 55,
+      "capacity": 550,
+      "used": 550,
+      "load_percentage": 100.0,
+      "agents_deployed": 550
+    },
+    "ca-central-1": {
+      "location": "Canada Central",
+      "servers": 65,
+      "capacity": 650,
+      "used": 650,
+      "load_percentage": 100.0,
+      "agents_deployed": 650
+    },
+    "af-south-1": {
+      "location": "Cape Town, Africa",
+      "servers": 45,
+      "capacity": 450,
+      "used": 450,
+      "load_percentage": 100.0,
+      "agents_deployed": 450
+    }
+  },
+  "deployment_result": {
+    "total_agents": 7990,
+    "regions_deployed": 10,
+    "success_rate": 100.0
+  },
+  "auto_scaling": {
+    "enabled": true,
+    "scale_up_threshold": 80,
+    "scale_down_threshold": 30
+  }
+}

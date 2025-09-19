@@ -129,3 +129,203 @@
     </script>
 </body>
 </html>
+
+        .ai-models { background: white; color: #333; border-radius: 15px; padding: 25px; margin-bottom: 20px; }
+        .model-selector { display: flex; gap: 10px; align-items: center; margin-bottom: 15px; }
+        .model-selector select { padding: 8px 12px; border: 1px solid #ddd; border-radius: 5px; }
+        .model-selector button { padding: 8px 15px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .model-info { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 10px; }
+        .model-status { display: inline-block; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; }
+        .model-status.active { background: #d4edda; color: #155724; }
+        .model-status.available { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 JARVIS</h1>
+            <p>Автономная AI Система с Локальными Нейросетями</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="card">
+                <h3>📊 Статус Системы</h3>
+                <div class="metric"><span>Статус:</span><span class="metric-value" id="system-status">Загрузка...</span></div>
+                <div class="metric"><span>Время работы:</span><span class="metric-value" id="uptime">-</span></div>
+                <div class="metric"><span>Активные задачи:</span><span class="metric-value" id="active-tasks">-</span></div>
+            </div>
+
+            <div class="card">
+                <h3>⚡ Производительность</h3>
+                <div class="metric"><span>Оценка:</span><span class="metric-value" id="performance-score">-</span></div>
+                <div class="metric"><span>База знаний:</span><span class="metric-value" id="knowledge-base">-</span></div>
+                <div class="metric"><span>CPU:</span><span class="metric-value" id="cpu-usage">-</span></div>
+            </div>
+
+            <div class="ai-models">
+                <h3>🧠 AI Модели</h3>
+                <div class="model-selector">
+                    <select id="model-select">
+                        <option value="">Выберите модель...</option>
+                    </select>
+                    <button onclick="switchModel()">Переключить</button>
+                </div>
+                <div class="model-info" id="model-info">
+                    <div><strong>Текущая модель:</strong> <span id="current-model">-</span></div>
+                    <div><strong>Доступные модели:</strong> <span id="available-models">-</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <h3>💬 Чат с JARVIS</h3>
+            <div class="chat-messages" id="chat-messages">
+                <div class="message jarvis">Привет! Я JARVIS с локальными нейросетями. Чем могу помочь?</div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chat-input" placeholder="Введите сообщение..." onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()">Отправить</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="refresh-btn" onclick="refreshData()">🔄</button>
+
+    <script>
+        let availableModels = [];
+        let currentModel = '';
+
+        async function loadSystemStatus() {
+            try {
+                const response = await fetch('/api/system/status');
+                const data = await response.json();
+                document.getElementById('system-status').textContent = data.system_status;
+                document.getElementById('uptime').textContent = formatUptime(data.uptime);
+                document.getElementById('active-tasks').textContent = data.state.active_tasks;
+                document.getElementById('performance-score').textContent = data.state.performance_score.toFixed(2);
+                document.getElementById('knowledge-base').textContent = data.state.knowledge_base_size + ' файлов';
+                document.getElementById('cpu-usage').textContent = (data.state.resources_used.cpu * 100).toFixed(1) + '%';
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        async function loadAIModels() {
+            try {
+                const response = await fetch('/api/ai/models');
+                const data = await response.json();
+                
+                if (data.error) {
+                    console.error('Ошибка загрузки моделей:', data.error);
+                    return;
+                }
+                
+                availableModels = data.available_models || [];
+                currentModel = data.current_model || '';
+                
+                // Обновляем селектор моделей
+                const select = document.getElementById('model-select');
+                select.innerHTML = '<option value="">Выберите модель...</option>';
+                
+                availableModels.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model;
+                    option.textContent = model;
+                    if (model === currentModel) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+                
+                // Обновляем информацию о моделях
+                document.getElementById('current-model').textContent = currentModel;
+                document.getElementById('available-models').textContent = availableModels.join(', ');
+                
+            } catch (error) {
+                console.error('Ошибка загрузки моделей:', error);
+            }
+        }
+
+        async function switchModel() {
+            const select = document.getElementById('model-select');
+            const selectedModel = select.value;
+            
+            if (!selectedModel) {
+                alert('Выберите модель для переключения');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/ai/switch-model', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model: selectedModel })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert(data.message);
+                    loadAIModels(); // Перезагружаем список моделей
+                } else {
+                    alert('Ошибка: ' + data.error);
+                }
+            } catch (error) {
+                alert('Ошибка переключения модели: ' + error.message);
+            }
+        }
+
+        function formatUptime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            return `${hours}ч ${minutes}м`;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            addMessage(message, 'user');
+            input.value = '';
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+                const data = await response.json();
+                addMessage(data.response, 'jarvis');
+            } catch (error) {
+                addMessage('Ошибка соединения', 'jarvis');
+            }
+        }
+
+        function addMessage(text, sender) {
+            const container = document.getElementById('chat-messages');
+            const message = document.createElement('div');
+            message.className = `message ${sender}`;
+            message.textContent = text;
+            container.appendChild(message);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') sendMessage();
+        }
+
+        function refreshData() {
+            loadSystemStatus();
+            loadAIModels();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSystemStatus();
+            loadAIModels();
+            setInterval(loadSystemStatus, 10000);
+            setInterval(loadAIModels, 30000); // Обновляем модели каждые 30 секунд
+        });
+    </script>
+</body>
+</html>

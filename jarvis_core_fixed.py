@@ -108,38 +108,51 @@ class JarvisCore:
         """Загрузка конфигурации"""
         config_path = Path("jarvis_data/config.yaml")
         
-        if config_path.exists():
-            with open(config_path, 'r', encoding='utf-8') as f:
-                self.config = yaml.safe_load(f)
-        else:
-            # Создаем базовую конфигурацию
-            self.config = {
-                "system": {
-                    "name": "JARVIS",
-                    "version": "1.0.0",
-                    "autonomy_level": 1,
-                    "max_instances": 5
-                },
-                "ai": {
-                    "provider": "ollama",
-                    "model": "llama2",
-                    "api_url": "http://localhost:11434"
-                },
-                "monitoring": {
-                    "enabled": True,
-                    "interval": 30
-                },
-                "replication": {
-                    "enabled": False,
-                    "servers": []
-                }
+        # Базовая конфигурация
+        default_config = {
+            "system": {
+                "name": "JARVIS",
+                "version": "1.0.0",
+                "autonomy_level": 1,
+                "max_instances": 5
+            },
+            "ai": {
+                "provider": "ollama",
+                "model": "llama3.2:3b",
+                "api_url": "http://localhost:11434",
+                "fallback_models": ["gemma2:2b", "llama3.2:3b"]
+            },
+            "monitoring": {
+                "enabled": True,
+                "interval": 30
+            },
+            "replication": {
+                "enabled": False,
+                "servers": []
             }
+        }
+        
+        if config_path.exists():
+            try:
+                with open(config_path, 'r', encoding='utf-8') as f:
+                    loaded_config = yaml.safe_load(f)
+                    if loaded_config:
+                        self.config = loaded_config
+                    else:
+                        self.config = default_config
+            except Exception as e:
+                logger.warning(f"⚠️ Ошибка загрузки конфигурации: {e}")
+                self.config = default_config
+        else:
+            self.config = default_config
             
             # Сохраняем конфигурацию
-            with open(config_path, 'w', encoding='utf-8') as f:
-                yaml.dump(self.config, f, default_flow_style=False, allow_unicode=True)
-            
-            logger.info("📝 Создана базовая конфигурация")
+            try:
+                with open(config_path, 'w', encoding='utf-8') as f:
+                    yaml.dump(self.config, f, default_flow_style=False, allow_unicode=True)
+                logger.info("📝 Создана базовая конфигурация")
+            except Exception as e:
+                logger.warning(f"⚠️ Ошибка сохранения конфигурации: {e}")
     
     def _initialize_modules(self):
         """Инициализация модулей системы"""
@@ -193,6 +206,58 @@ class JarvisCore:
             user_message = message.get("message", "")
             response = await self.process_user_message(user_message)
             return {"response": response}
+        
+        @self.app.get("/api/ai/models")
+        async def get_ai_models():
+            """Получение списка доступных AI моделей"""
+            try:
+                import requests
+                response = requests.get("http://localhost:11434/api/tags", timeout=5)
+                if response.status_code == 200:
+                    data = response.json()
+                    models = []
+                    if data and "models" in data:
+                        models = [model["name"] for model in data["models"]]
+                    
+                    return {
+                        "available_models": models,
+                        "current_model": self.config.get("ai", {}).get("model", "llama3.2:3b") if self.config else "llama3.2:3b",
+                        "fallback_models": self.config.get("ai", {}).get("fallback_models", []) if self.config else []
+                    }
+                else:
+                    return {"error": "Не удалось получить список моделей"}
+            except Exception as e:
+                return {"error": f"Ошибка: {str(e)}"}
+        
+        @self.app.post("/api/ai/switch-model")
+        async def switch_ai_model(model_data: dict):
+            """Переключение AI модели"""
+            model_name = model_data.get("model")
+            if not model_name:
+                return {"error": "Не указана модель"}
+            
+            try:
+                # Проверяем, что модель доступна
+                import requests
+                response = requests.get("http://localhost:11434/api/tags", timeout=5)
+                if response.status_code == 200:
+                    data = response.json()
+                    available_models = [model["name"] for model in data.get("models", [])]
+                    
+                    if model_name in available_models:
+                        self.config["ai"]["model"] = model_name
+                        # Сохраняем конфигурацию
+                        config_path = Path("jarvis_data/config.yaml")
+                        with open(config_path, 'w', encoding='utf-8') as f:
+                            yaml.dump(self.config, f, default_flow_style=False, allow_unicode=True)
+                        
+                        return {"success": True, "message": f"Модель переключена на {model_name}"}
+                    else:
+                        return {"error": f"Модель {model_name} не найдена"}
+                else:
+                    return {"error": "Не удалось проверить доступные модели"}
+            except Exception as e:
+                return {"error": f"Ошибка переключения модели: {str(e)}"}
         
         @self.app.websocket("/ws")
         async def websocket_endpoint(websocket: WebSocket):
@@ -355,16 +420,36 @@ class JarvisCore:
     
     async def _get_ai_response(self, message: str) -> str:
         """Получение ответа от AI (Ollama или OpenAI)"""
-        try:
-            # Попробуем Ollama
-            response = await self._get_ollama_response(message)
-            if response:
-                return response
-        except:
-            pass
+        # Получаем список моделей для попыток
+        models = self.config.get("ai", {}).get("fallback_models", ["llama3.2:3b"])
+        primary_model = self.config.get("ai", {}).get("model", "llama3.2:3b")
+        
+        # Добавляем основную модель в начало списка
+        if primary_model not in models:
+            models.insert(0, primary_model)
+        
+        # Пробуем каждую модель
+        for model in models:
+            try:
+                # Временно меняем модель в конфиге
+                original_model = self.config["ai"]["model"]
+                self.config["ai"]["model"] = model
+                
+                response = await self._get_ollama_response(message)
+                if response and response != "Получил ваше сообщение, обрабатываю...":
+                    # Возвращаем оригинальную модель
+                    self.config["ai"]["model"] = original_model
+                    return response
+                    
+            except Exception as e:
+                logger.warning(f"⚠️ Модель {model} недоступна: {e}")
+                continue
+            finally:
+                # Возвращаем оригинальную модель
+                self.config["ai"]["model"] = original_model
         
         try:
-            # Попробуем OpenAI
+            # Попробуем OpenAI как последний вариант
             response = await self._get_openai_response(message)
             if response:
                 return response
@@ -378,18 +463,36 @@ class JarvisCore:
         """Попытка получить ответ от Ollama"""
         try:
             api_url = self.config.get("ai", {}).get("api_url", "http://localhost:11434")
-            model = self.config.get("ai", {}).get("model", "llama2")
+            model = self.config.get("ai", {}).get("model", "llama3.2:3b")
+            
+            # Системный промпт для JARVIS
+            system_prompt = """Ты JARVIS - автономная AI-система. Твои характеристики:
+- Отвечаешь на русском языке
+- Помогаешь пользователям с задачами
+- Анализируешь данные и даешь советы
+- Генерируешь код и контент
+- Всегда вежливый и полезный
+- Краткие и точные ответы"""
             
             payload = {
                 "model": model,
-                "prompt": f"Ты JARVIS, автономная AI-система. Ответь на русском языке: {message}",
-                "stream": False
+                "prompt": f"{system_prompt}\n\nПользователь: {message}\nJARVIS:",
+                "stream": False,
+                "options": {
+                    "temperature": 0.7,
+                    "top_p": 0.9,
+                    "max_tokens": 500
+                }
             }
             
-            response = requests.post(f"{api_url}/api/generate", json=payload, timeout=10)
+            response = requests.post(f"{api_url}/api/generate", json=payload, timeout=30)
             if response.status_code == 200:
                 data = response.json()
-                return data.get("response", "Ошибка получения ответа от Ollama")
+                ai_response = data.get("response", "").strip()
+                if ai_response:
+                    return ai_response
+                else:
+                    return "Получил ваше сообщение, обрабатываю..."
             
         except Exception as e:
             logger.warning(f"⚠️ Ollama недоступен: {e}")

@@ -1,0 +1,9 @@
+# Autonomous JARVIS System Monitoring
+# Мониторинг каждые 5 минут
+*/5 * * * * /opt/autonomous-jarvis/monitor.sh
+
+# Ежедневная очистка логов
+0 2 * * * find /var/log -name "jarvis-*.log" -mtime +7 -delete
+
+# Еженедельная проверка обновлений
+0 3 * * 0 cd /opt/autonomous-jarvis && git pull && docker-compose build --no-cache && docker-compose up -d

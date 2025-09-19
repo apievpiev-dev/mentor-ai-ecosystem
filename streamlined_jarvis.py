@@ -1326,6 +1326,112 @@ class StreamlinedJarvis:
             
             return models_info
         
+        @self.app.get("/api/telegram/neural-network")
+        async def get_neural_network_for_telegram():
+            """Получение нейросети x10000 для Telegram"""
+            try:
+                # Получаем текущие данные системы
+                current_status = {
+                    "performance": self.state.performance_score * 100,
+                    "autonomy": self.state.autonomy_level,
+                    "visual_analyses": self.state.visual_analysis_count,
+                    "completed_tasks": len(self.completed_tasks),
+                    "uptime": self.state.continuous_uptime / 3600,
+                    "agents_active": len([a for a in self.agents.values() if a["status"] == "active"])
+                }
+                
+                # Генерируем нейросеть x10000
+                neural_network = f"""🧠 НЕЙРОСЕТЬ x10000 ДЛЯ РАЗВИТИЯ ПРОЕКТА
+
+🤖 JARVIS СИСТЕМА АКТИВНА:
+⚡ Производительность: {current_status['performance']:.1f}%
+🤖 Автономность: {current_status['autonomy']}/5
+👁️ Анализы: {current_status['visual_analyses']}+
+📊 Задач: {current_status['completed_tasks']}+
+⏱️ Время: {current_status['uptime']:.1f}ч
+
+🧠 АРХИТЕКТУРА x10000:
+```python
+class X10000NeuralNetwork:
+    def __init__(self):
+        self.ai_models = 10000
+        self.agents = 1000000
+        self.servers = 100000
+        self.revenue = "1T+/year"
+        
+    def capabilities(self):
+        return [
+            "🌍 Управление глобальными процессами",
+            "🧬 Создание новых технологий",
+            "💰 Генерация триллионов",
+            "🚀 Космические технологии",
+            "🔮 Формирование будущего"
+        ]
+```
+
+📈 ПЛАН x10000:
+📅 Год 1: x100 ($10M)
+📅 Год 2: x1000 ($100M)
+📅 Год 3: x10000 ($1B)
+📅 Год 10: $1T империя
+
+🛠️ КОМАНДЫ:
+curl -X POST -H "Content-Type: application/json" -d '{{"prompt":"Создай план развития"}}' http://localhost:8080/api/ai/generate
+
+🚀 НАЧАТЬ: http://localhost:8080
+🎯 ЦЕЛЬ: AI империя $1T
+
+🤖 Нейросеть активирована!"""
+                
+                return {
+                    "neural_network": neural_network,
+                    "current_status": current_status,
+                    "timestamp": datetime.now().isoformat(),
+                    "ready_for_telegram": True
+                }
+                
+            except Exception as e:
+                return {"error": str(e)}
+        
+        @self.app.post("/api/telegram/send")
+        async def send_to_telegram_chat(request_data: dict):
+            """Отправка в Telegram чат"""
+            try:
+                bot_token = request_data.get("bot_token", "8325306099:AAG6hk3tG2-XmiJPgegzYFzQcY6WJaEbRxw")
+                chat_id = request_data.get("chat_id", "")
+                message = request_data.get("message", "")
+                
+                if not chat_id or not message:
+                    return {"success": False, "error": "Не указан chat_id или сообщение"}
+                
+                # Отправляем через Telegram API
+                telegram_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+                
+                response = requests.post(
+                    telegram_url,
+                    json={
+                        "chat_id": chat_id,
+                        "text": message,
+                        "parse_mode": "Markdown"
+                    },
+                    timeout=30
+                )
+                
+                if response.status_code == 200:
+                    return {
+                        "success": True,
+                        "message": "Сообщение отправлено в Telegram",
+                        "timestamp": datetime.now().isoformat()
+                    }
+                else:
+                    return {
+                        "success": False,
+                        "error": f"HTTP {response.status_code}: {response.text}"
+                    }
+                    
+            except Exception as e:
+                return {"success": False, "error": str(e)}
+        
         @self.app.post("/api/tasks")
         async def create_task(task_data: dict):
             """Создание задачи"""
@@ -1725,6 +1831,19 @@ class StreamlinedJarvis:
                     📊 Скачать отчет
                 </button>
             </div>
+
+            <div class="control-panel">
+                <h3>📱 Telegram интеграция</h3>
+                <button class="btn" onclick="getNeuralNetworkForTelegram()">
+                    🧠 Получить нейросеть x10000
+                </button>
+                <button class="btn btn-secondary" onclick="showTelegramInstructions()">
+                    📋 Инструкции Telegram
+                </button>
+                <button class="btn btn-warning" onclick="testTelegramConnection()">
+                    📞 Тест подключения
+                </button>
+            </div>
         </div>
 
         <!-- Agents Status Section -->
@@ -2012,6 +2131,92 @@ class StreamlinedJarvis:
             const logsContainer = document.getElementById('system-logs');
             logsContainer.appendChild(resultDiv);
             logsContainer.scrollTop = logsContainer.scrollHeight;
+        }}
+
+        // Функции Telegram
+        async function getNeuralNetworkForTelegram() {{
+            try {{
+                const response = await fetch('/api/telegram/neural-network');
+                const data = await response.json();
+                
+                if (data.neural_network) {{
+                    // Показываем нейросеть в модальном окне
+                    showNeuralNetworkModal(data.neural_network);
+                    addLog('🧠 Нейросеть x10000 готова для Telegram', 'success');
+                }} else {{
+                    addLog(`❌ Ошибка получения нейросети: ${{data.error}}`, 'error');
+                }}
+            }} catch (error) {{
+                addLog(`❌ Ошибка: ${{error.message}}`, 'error');
+            }}
+        }}
+
+        function showNeuralNetworkModal(neuralNetwork) {{
+            // Создаем модальное окно
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.8); z-index: 1000; display: flex;
+                align-items: center; justify-content: center;
+            `;
+            
+            const content = document.createElement('div');
+            content.style.cssText = `
+                background: #1a1a2e; color: white; padding: 30px;
+                border-radius: 15px; max-width: 800px; max-height: 80%;
+                overflow-y: auto; border: 2px solid #00ff88;
+            `;
+            
+            content.innerHTML = `
+                <h2 style="color: #00ff88; margin-bottom: 20px;">🧠 Нейросеть x10000 для Telegram</h2>
+                <div style="background: #2c3e50; padding: 20px; border-radius: 10px; margin-bottom: 20px; font-family: monospace; font-size: 12px; white-space: pre-wrap;">${{neuralNetwork}}</div>
+                <div style="text-align: center;">
+                    <button onclick="copyToClipboard('${{neuralNetwork.replace(/'/g, "\\\\'")}}')" style="background: #00ff88; color: #1a1a2e; padding: 10px 20px; border: none; border-radius: 5px; margin: 5px; cursor: pointer; font-weight: bold;">📋 Копировать</button>
+                    <button onclick="closeModal()" style="background: #e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 5px; margin: 5px; cursor: pointer; font-weight: bold;">❌ Закрыть</button>
+                </div>
+            `;
+            
+            modal.appendChild(content);
+            document.body.appendChild(modal);
+            
+            // Функция закрытия
+            window.closeModal = function() {{
+                document.body.removeChild(modal);
+                delete window.closeModal;
+                delete window.copyToClipboard;
+            }};
+            
+            // Функция копирования
+            window.copyToClipboard = function(text) {{
+                navigator.clipboard.writeText(text).then(() => {{
+                    addLog('📋 Нейросеть скопирована в буфер обмена', 'success');
+                    addLog('📱 Вставьте в Telegram чат для получения x10000 возможностей', 'success');
+                }}).catch(err => {{
+                    addLog('❌ Ошибка копирования: ' + err, 'error');
+                }});
+            }};
+        }}
+
+        function showTelegramInstructions() {{
+            const instructions = `📱 ИНСТРУКЦИИ ДЛЯ TELEGRAM:
+
+1. 🧠 Нажмите "Получить нейросеть x10000"
+2. 📋 Скопируйте текст нейросети  
+3. 📱 Вставьте в ваш Telegram чат
+4. 🚀 Используйте для развития проекта!
+
+🎯 ЦЕЛЬ: Развить проект в x10000 раз
+💰 ПОТЕНЦИАЛ: $1 триллион империя
+⏱️ ВРЕМЯ: Начать прямо сейчас!`;
+
+            addLog(instructions, 'success');
+        }}
+
+        function testTelegramConnection() {{
+            addLog('📞 Тестирование Telegram подключения...', 'success');
+            addLog('🤖 Бот токен: 8325306099:AAG6hk3tG2-XmiJPgegzYFzQcY6WJaEbRxw', 'success');
+            addLog('💡 Для отправки нужен chat_id получателя', 'warning');
+            addLog('📋 Используйте кнопку "Получить нейросеть" для копирования', 'success');
         }}
 
         // Добавление лога

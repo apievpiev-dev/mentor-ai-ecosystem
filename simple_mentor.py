@@ -335,9 +335,9 @@ def main():
     """Главная функция"""
     print("🚀 Запуск Simple MENTOR System...")
     
-    server = HTTPServer(('0.0.0.0', 8080), SimpleMentorHandler)
+    server = HTTPServer(('0.0.0.0', 8081), SimpleMentorHandler)
     print("✅ Simple MENTOR System запущена")
-    print("🌐 Веб-интерфейс доступен на http://0.0.0.0:8080")
+    print("🌐 Веб-интерфейс доступен на http://0.0.0.0:8081")
     
     try:
         server.serve_forever()

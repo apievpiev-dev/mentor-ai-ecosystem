@@ -724,6 +724,65 @@ async def root():
             text-align: center;
             color: #856404;
         }
+        
+        .typing-dots {
+            animation: typingDots 1.5s infinite;
+        }
+        
+        @keyframes typingDots {
+            0%, 20% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        .suggestion-item {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            padding: 8px 15px;
+            margin: 5px;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+        
+        .suggestion-item:hover {
+            background: #007bff;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .voice-indicator {
+            animation: voicePulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes voicePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-action-btn {
+            padding: 8px 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: transform 0.2s;
+        }
+        
+        .quick-action-btn:hover {
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -747,9 +806,17 @@ async def root():
                     <div id="imagePreview"></div>
                 </div>
                 
+                <!-- Быстрые действия -->
+                <div class="quick-actions">
+                    <button class="quick-action-btn" onclick="quickAction('Расскажи историю проекта')">📚 История</button>
+                    <button class="quick-action-btn" onclick="quickAction('Проанализируй код системы')">💻 Анализ кода</button>
+                    <button class="quick-action-btn" onclick="quickAction('Как улучшить проект?')">🚀 Улучшения</button>
+                    <button class="quick-action-btn" onclick="quickAction('Создай новую функцию')">⚡ Генерация</button>
+                </div>
+                
                 <div class="agent-selector">
                     <label><strong>Выберите умного агента:</strong></label>
-                    <select id="agentSelect">
+                    <select id="agentSelect" onchange="updateSuggestions()">
                         <option value="general_assistant">🧠 Умный Помощник (знает всю историю)</option>
                         <option value="code_developer">💻 AI Разработчик (весь код проекта)</option>
                         <option value="vision_specialist">👁️ Визуальный Специалист (работа с фото)</option>
@@ -763,10 +830,32 @@ async def root():
                     </div>
                 </div>
                 
+                <!-- Умные подсказки -->
+                <div id="smartSuggestions" style="margin-bottom: 15px; display: none;">
+                    <div style="background: #e8f4fd; border-radius: 10px; padding: 15px; border-left: 4px solid #2196f3;">
+                        <strong>💡 Умные подсказки:</strong>
+                        <div id="suggestionsList"></div>
+                    </div>
+                </div>
+                
+                <!-- Индикатор печатания -->
+                <div id="typingIndicator" style="display: none; background: #f0f0f0; padding: 10px; border-radius: 10px; margin-bottom: 10px; color: #666;">
+                    <span id="typingAgent">AI агент</span> печатает... <span class="typing-dots">●●●</span>
+                </div>
+                
                 <div class="input-container">
                     <input type="text" id="messageInput" class="message-input" 
-                           placeholder="Напишите сообщение (можно с фото)..." />
+                           placeholder="Напишите сообщение (можно с фото)..." 
+                           autocomplete="off" />
+                    <button onclick="startVoiceInput()" class="send-button" style="margin-right: 10px; background: linear-gradient(135deg, #9b59b6, #8e44ad);">🎤</button>
                     <button onclick="sendMessage()" class="send-button">🚀 Отправить</button>
+                </div>
+                
+                <!-- Голосовой ввод -->
+                <div id="voiceInput" style="display: none; background: #fff3cd; border-radius: 10px; padding: 15px; margin-top: 10px; text-align: center;">
+                    <div>🎤 <strong>Говорите...</strong></div>
+                    <div id="voiceText" style="margin-top: 10px; font-style: italic;"></div>
+                    <button onclick="stopVoiceInput()" style="margin-top: 10px; padding: 8px 16px; background: #dc3545; color: white; border: none; border-radius: 5px;">Остановить</button>
                 </div>
             </div>
             
@@ -819,21 +908,58 @@ async def root():
     <script>
         let ws = null;
         let userId = 'user_' + Math.random().toString(36).substr(2, 9);
+        let recognition = null;
+        let isListening = false;
+        let messageHistory = [];
+        
+        // Умные подсказки для каждого агента
+        const agentSuggestions = {
+            'general_assistant': [
+                'Расскажи всю историю проекта Mentor',
+                'Как развивать проект дальше?',
+                'Что уже сделано в проекте?',
+                'Какие системы работают?'
+            ],
+            'code_developer': [
+                'Проанализируй код системы',
+                'Оптимизируй производительность',
+                'Найди баги в коде',
+                'Создай новую функцию',
+                'Рефактори этот код'
+            ],
+            'vision_specialist': [
+                'Проанализируй это изображение',
+                'Создай виртуальную примерку',
+                'Надень эти брюки на модель',
+                'Улучши качество фото',
+                'Определи цвета одежды'
+            ],
+            'project_manager': [
+                'Создай план развития проекта',
+                'Какие задачи приоритетные?',
+                'Оцени текущий прогресс',
+                'Спланируй следующий спринт'
+            ]
+        };
         
         function connectWebSocket() {
             ws = new WebSocket(`ws://${window.location.host}/ws/enhanced/${userId}`);
             
             ws.onopen = function() {
                 console.log('WebSocket подключен к Enhanced AI системе');
+                showNotification('🔗 Подключено к умной AI системе', 'success');
             };
             
             ws.onmessage = function(event) {
+                hideTypingIndicator();
                 const data = JSON.parse(event.data);
                 addMessage(data.message, 'ai', data.agent, data.ai_used, data.response_time, data.has_context, data.image_processed);
+                updateSuggestions();
             };
             
             ws.onclose = function() {
                 console.log('WebSocket отключен, переподключение...');
+                showNotification('⚠️ Переподключение...', 'warning');
                 setTimeout(connectWebSocket, 3000);
             };
         }
@@ -887,14 +1013,19 @@ async def root():
             
             if (!message) return;
             
+            // Добавляем в историю для автодополнения
+            if (!messageHistory.includes(message)) {
+                messageHistory.push(message);
+                if (messageHistory.length > 50) {
+                    messageHistory = messageHistory.slice(-50);
+                }
+            }
+            
             addMessage(message, 'user');
             
-            // Показываем индикатор обработки
-            const processingDiv = document.createElement('div');
-            processingDiv.className = 'processing-indicator';
-            processingDiv.innerHTML = '🤔 AI анализирует с полным контекстом проекта...';
-            processingDiv.id = 'processing';
-            document.getElementById('chatMessages').appendChild(processingDiv);
+            // Показываем индикатор печатания
+            const agentName = document.querySelector(`#agentSelect option[value="${agentType}"]`).textContent;
+            showTypingIndicator(agentName);
             
             try {
                 const formData = new FormData();
@@ -913,9 +1044,7 @@ async def root():
                 
                 const data = await response.json();
                 
-                // Убираем индикатор
-                const processing = document.getElementById('processing');
-                if (processing) processing.remove();
+                hideTypingIndicator();
                 
                 if (data.success) {
                     const result = data.response;
@@ -929,18 +1058,27 @@ async def root():
                         result.image_processed
                     );
                     
+                    // Показываем уведомление о типе ответа
+                    if (result.ai_used) {
+                        showNotification('🧠 Ответ от настоящего AI', 'success');
+                    } else if (result.has_context) {
+                        showNotification('📚 Ответ с контекстом проекта', 'info');
+                    }
+                    
                     // Очищаем форму
                     input.value = '';
                     fileInput.value = '';
                     document.getElementById('imagePreview').innerHTML = '';
+                    hideAutoCompleteDropdown();
                 } else {
                     addMessage('Ошибка обработки запроса', 'ai', 'System');
+                    showNotification('❌ Ошибка обработки', 'warning');
                 }
                 
             } catch (error) {
-                const processing = document.getElementById('processing');
-                if (processing) processing.remove();
+                hideTypingIndicator();
                 addMessage(`Ошибка: ${error}`, 'ai', 'System');
+                showNotification('❌ Ошибка сети', 'warning');
             }
         }
         
@@ -967,10 +1105,193 @@ async def root():
         
         document.getElementById('imageFile').addEventListener('change', previewImage);
         
+        function showTypingIndicator(agentName) {
+            const indicator = document.getElementById('typingIndicator');
+            document.getElementById('typingAgent').textContent = agentName;
+            indicator.style.display = 'block';
+        }
+        
+        function hideTypingIndicator() {
+            document.getElementById('typingIndicator').style.display = 'none';
+        }
+        
+        function showNotification(message, type = 'info') {
+            // Создаем уведомление
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; top: 20px; right: 20px; z-index: 1000;
+                padding: 15px 20px; border-radius: 10px; color: white; font-weight: bold;
+                background: ${type === 'success' ? '#2ecc71' : type === 'warning' ? '#f39c12' : '#3498db'};
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Показываем
+            setTimeout(() => notification.style.opacity = '1', 100);
+            
+            // Убираем через 3 секунды
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
+        
+        function updateSuggestions() {
+            const agentType = document.getElementById('agentSelect').value;
+            const suggestions = agentSuggestions[agentType] || [];
+            const suggestionsDiv = document.getElementById('smartSuggestions');
+            const suggestionsList = document.getElementById('suggestionsList');
+            
+            if (suggestions.length > 0) {
+                suggestionsList.innerHTML = '';
+                suggestions.forEach(suggestion => {
+                    const item = document.createElement('span');
+                    item.className = 'suggestion-item';
+                    item.textContent = suggestion;
+                    item.onclick = () => quickAction(suggestion);
+                    suggestionsList.appendChild(item);
+                });
+                suggestionsDiv.style.display = 'block';
+            } else {
+                suggestionsDiv.style.display = 'none';
+            }
+        }
+        
+        function quickAction(text) {
+            document.getElementById('messageInput').value = text;
+            sendMessage();
+        }
+        
+        function startVoiceInput() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                showNotification('❌ Голосовой ввод не поддерживается в этом браузере', 'warning');
+                return;
+            }
+            
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            
+            recognition.lang = 'ru-RU';
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            
+            recognition.onstart = function() {
+                isListening = true;
+                document.getElementById('voiceInput').style.display = 'block';
+                document.getElementById('voiceText').textContent = 'Слушаю...';
+                showNotification('🎤 Голосовой ввод активирован', 'info');
+            };
+            
+            recognition.onresult = function(event) {
+                let finalTranscript = '';
+                let interimTranscript = '';
+                
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const transcript = event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += transcript;
+                    } else {
+                        interimTranscript += transcript;
+                    }
+                }
+                
+                document.getElementById('voiceText').textContent = finalTranscript || interimTranscript;
+                
+                if (finalTranscript) {
+                    document.getElementById('messageInput').value = finalTranscript;
+                    stopVoiceInput();
+                    showNotification('✅ Голосовое сообщение распознано', 'success');
+                }
+            };
+            
+            recognition.onerror = function(event) {
+                showNotification('❌ Ошибка распознавания речи', 'warning');
+                stopVoiceInput();
+            };
+            
+            recognition.start();
+        }
+        
+        function stopVoiceInput() {
+            if (recognition && isListening) {
+                recognition.stop();
+                isListening = false;
+                document.getElementById('voiceInput').style.display = 'none';
+            }
+        }
+        
+        // Автодополнение на основе истории
+        function setupAutoComplete() {
+            const input = document.getElementById('messageInput');
+            
+            input.addEventListener('input', function() {
+                const value = this.value.toLowerCase();
+                if (value.length > 2) {
+                    const matches = messageHistory.filter(msg => 
+                        msg.toLowerCase().includes(value)
+                    ).slice(0, 3);
+                    
+                    if (matches.length > 0) {
+                        showAutoCompleteDropdown(matches);
+                    } else {
+                        hideAutoCompleteDropdown();
+                    }
+                } else {
+                    hideAutoCompleteDropdown();
+                }
+            });
+        }
+        
+        function showAutoCompleteDropdown(matches) {
+            let dropdown = document.getElementById('autoCompleteDropdown');
+            if (!dropdown) {
+                dropdown = document.createElement('div');
+                dropdown.id = 'autoCompleteDropdown';
+                dropdown.style.cssText = `
+                    position: absolute; background: white; border: 1px solid #ddd;
+                    border-radius: 8px; max-height: 200px; overflow-y: auto;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.1); z-index: 1000;
+                    width: 100%; top: 100%; left: 0;
+                `;
+                document.querySelector('.input-container').style.position = 'relative';
+                document.querySelector('.input-container').appendChild(dropdown);
+            }
+            
+            dropdown.innerHTML = '';
+            matches.forEach(match => {
+                const item = document.createElement('div');
+                item.style.cssText = 'padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; color: #333;';
+                item.textContent = match;
+                item.onclick = () => {
+                    document.getElementById('messageInput').value = match;
+                    hideAutoCompleteDropdown();
+                };
+                item.onmouseover = () => item.style.background = '#f0f0f0';
+                item.onmouseout = () => item.style.background = 'white';
+                dropdown.appendChild(item);
+            });
+        }
+        
+        function hideAutoCompleteDropdown() {
+            const dropdown = document.getElementById('autoCompleteDropdown');
+            if (dropdown) {
+                dropdown.style.display = 'none';
+            }
+        }
+        
         // Инициализация
         connectWebSocket();
         updateStats();
+        updateSuggestions();
+        setupAutoComplete();
+        
         setInterval(updateStats, 5000);
+        
+        // Показываем приветственное сообщение
+        setTimeout(() => {
+            showNotification('🎉 Добро пожаловать в Enhanced AI Mentor!', 'success');
+        }, 1000);
     </script>
 </body>
 </html>

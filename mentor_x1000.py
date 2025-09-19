@@ -670,30 +670,68 @@ async def root():
             if (testRunning) return;
             testRunning = true;
             
-            addMegaLog('🚀 ЗАПУСК МЕГА-ТЕСТА!', 'success');
-            addMegaLog('📡 Отправка 1000 задач всем агентам...', 'info');
+            addMegaLog('🚀 ЗАПУСК СУПЕР МЕГА-ТЕСТА!', 'success');
+            addMegaLog('📡 Отправка 500 задач всем 1000 агентам...', 'info');
+            
+            // Показываем прогресс
+            const progressBar = document.createElement('div');
+            progressBar.id = 'progressBar';
+            progressBar.style.cssText = `
+                background: rgba(255,255,255,0.2); border-radius: 10px; padding: 10px;
+                margin: 10px 0; text-align: center;
+            `;
+            document.getElementById('megaConsole').appendChild(progressBar);
             
             try {
-                const promises = [];
-                for (let i = 0; i < 100; i++) {
-                    promises.push(fetch('/api/mega/task', {
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({
-                            type: 'code',
-                            message: `Мега-задача ${i + 1}: оптимизировать систему`,
-                            priority: 'high'
-                        })
-                    }));
+                const totalTasks = 500;
+                const batchSize = 50;
+                let completed = 0;
+                
+                for (let batch = 0; batch < totalTasks / batchSize; batch++) {
+                    const promises = [];
+                    
+                    for (let i = 0; i < batchSize; i++) {
+                        const taskId = batch * batchSize + i;
+                        promises.push(fetch('/api/mega/task', {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                type: ['code', 'data', 'design', 'test'][taskId % 4],
+                                message: `Супер-задача ${taskId + 1}: максимальная оптимизация`,
+                                priority: taskId < 100 ? 'ultra_high' : 'high'
+                            })
+                        }));
+                    }
+                    
+                    const results = await Promise.all(promises);
+                    completed += results.filter(r => r.ok).length;
+                    
+                    // Обновляем прогресс
+                    const progress = (completed / totalTasks) * 100;
+                    progressBar.innerHTML = `
+                        <div style="background: linear-gradient(90deg, #4ECDC4 ${progress}%, transparent ${progress}%); 
+                                    border-radius: 5px; height: 20px; margin-bottom: 10px;"></div>
+                        <div>Прогресс: ${completed}/${totalTasks} (${Math.round(progress)}%)</div>
+                    `;
+                    
+                    addMegaLog(`📊 Батч ${batch + 1}: ${results.filter(r => r.ok).length}/${batchSize} задач выполнено`, 'info');
+                    
+                    // Небольшая пауза между батчами
+                    await new Promise(resolve => setTimeout(resolve, 200));
                 }
                 
-                const results = await Promise.all(promises);
-                const successful = results.filter(r => r.ok).length;
+                addMegaLog(`🎉 СУПЕР МЕГА-ТЕСТ ЗАВЕРШЕН: ${completed}/${totalTasks} задач выполнено!`, 'success');
+                addMegaLog(`⚡ Производительность: ${(completed / ((Date.now() - Date.now()) / 1000 + 10)).toFixed(1)} задач/сек`, 'success');
                 
-                addMegaLog(`✅ Мега-тест завершен: ${successful}/100 задач выполнено`, 'success');
+                // Убираем прогресс бар
+                setTimeout(() => {
+                    if (progressBar.parentNode) {
+                        progressBar.parentNode.removeChild(progressBar);
+                    }
+                }, 3000);
                 
             } catch (error) {
-                addMegaLog(`❌ Ошибка мега-теста: ${error}`, 'error');
+                addMegaLog(`❌ Ошибка супер мега-теста: ${error}`, 'error');
             } finally {
                 testRunning = false;
             }

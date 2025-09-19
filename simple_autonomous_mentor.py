@@ -428,10 +428,19 @@ async def root():
             </div>
         </div>
         
-        <div class="input-container">
-            <input type="text" id="messageInput" class="message-input" placeholder="Напишите сообщение автономному агенту..." />
-            <button onclick="sendMessage()" class="send-button">Отправить</button>
-        </div>
+            <div class="input-container">
+                <input type="text" id="messageInput" class="message-input" placeholder="Напишите сообщение автономному агенту..." />
+                <button onclick="clearChat()" class="send-button" style="background: #e74c3c; margin-right: 10px;">🗑️ Очистить</button>
+                <button onclick="exportChat()" class="send-button" style="background: #f39c12; margin-right: 10px;">💾 Экспорт</button>
+                <button onclick="sendMessage()" class="send-button">Отправить</button>
+            </div>
+            
+            <!-- Панель быстрых команд -->
+            <div style="margin-top: 20px; text-align: center;">
+                <button onclick="quickCommand('Статус всех систем')" style="margin: 5px; padding: 10px 15px; background: #3498db; color: white; border: none; border-radius: 20px; cursor: pointer;">📊 Статус</button>
+                <button onclick="quickCommand('Оптимизируй производительность')" style="margin: 5px; padding: 10px 15px; background: #2ecc71; color: white; border: none; border-radius: 20px; cursor: pointer;">⚡ Оптимизация</button>
+                <button onclick="quickCommand('Проанализируй систему')" style="margin: 5px; padding: 10px 15px; background: #9b59b6; color: white; border: none; border-radius: 20px; cursor: pointer;">🔍 Анализ</button>
+            </div>
     </div>
 
     <script>
@@ -548,6 +557,59 @@ async def root():
             }
         });
         
+        function quickCommand(command) {
+            document.getElementById('messageInput').value = command;
+            sendMessage();
+        }
+        
+        function clearChat() {
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '<div class="message system-message"><strong>🗑️ Система:</strong> Чат очищен.</div>';
+        }
+        
+        function exportChat() {
+            const chatMessages = document.getElementById('chatMessages');
+            const messages = Array.from(chatMessages.children).map(msg => msg.textContent).join('\\n');
+            
+            const blob = new Blob([messages], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `mentor_chat_${new Date().toISOString().slice(0,19)}.txt`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Улучшенная функция добавления сообщений
+        function addMessage(message, type, agent = '', ai_used = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            
+            // Добавляем временную метку
+            const timestamp = new Date().toLocaleTimeString();
+            
+            if (type === 'user') {
+                messageDiv.className = 'message user-message';
+                messageDiv.innerHTML = `<strong>Вы [${timestamp}]:</strong> ${message}`;
+            } else {
+                messageDiv.className = ai_used ? 'message autonomous-message' : 'message agent-message';
+                const badge = ai_used ? ' 🧠' : '';
+                messageDiv.innerHTML = `<strong>${agent}${badge} [${timestamp}]:</strong> ${message}`;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Эффект появления
+            messageDiv.style.opacity = '0';
+            messageDiv.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                messageDiv.style.transition = 'all 0.3s ease';
+                messageDiv.style.opacity = '1';
+                messageDiv.style.transform = 'translateY(0)';
+            }, 100);
+        }
+        
         // Инициализация
         connectWebSocket();
         updateStatus();
@@ -556,6 +618,11 @@ async def root():
         // Обновление каждые 5 секунд
         setInterval(updateStatus, 5000);
         setInterval(updateAutonomousTasks, 8000);
+        
+        // Приветственное сообщение
+        setTimeout(() => {
+            addMessage('🎉 Добро пожаловать! Используйте быстрые команды или напишите свой запрос.', 'agent', 'Система', false);
+        }, 1000);
     </script>
 </body>
 </html>

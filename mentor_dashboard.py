@@ -343,7 +343,28 @@ async def root():
         
         function openSystem(port) {
             window.open(`http://localhost:${port}`, '_blank');
-            addConsoleLog(`Открываю систему на порту ${port}`, 'info');
+            addConsoleLog(`🌐 Открываю систему на порту ${port}`, 'info');
+            
+            // Показываем уведомление
+            showDashboardNotification(`Система на порту ${port} открыта в новой вкладке`, 'success');
+        }
+        
+        function showDashboardNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed; top: 20px; right: 20px; z-index: 1000;
+                padding: 15px 20px; border-radius: 10px; color: white; font-weight: bold;
+                background: ${type === 'success' ? '#2ecc71' : type === 'warning' ? '#f39c12' : '#3498db'};
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.style.opacity = '1', 100);
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
         }
         
         function startSystem(systemKey) {

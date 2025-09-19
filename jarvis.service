@@ -1,0 +1,24 @@
+[Unit]
+Description=JARVIS Autonomous AI System
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/workspace
+ExecStart=/workspace/start_jarvis_autonomous.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Переменные окружения
+Environment=PATH=/workspace/jarvis_env/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONPATH=/workspace
+
+# Ограничения ресурсов
+MemoryLimit=2G
+CPUQuota=200%
+
+[Install]
+WantedBy=multi-user.target

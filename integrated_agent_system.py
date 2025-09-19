@@ -39,7 +39,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('/home/mentor/integrated_system.log'),
+        logging.FileHandler('integrated_system.log'),
         logging.StreamHandler()
     ]
 )
@@ -63,10 +63,10 @@ class IntegratedAgentSystem:
     def _setup_directories(self):
         """Создание необходимых директорий"""
         directories = [
-            "/home/mentor/agent_data",
-            "/home/mentor/agent_logs",
-            "/home/mentor/agent_knowledge",
-            "/home/mentor/agent_projects"
+            "agent_data",
+            "agent_logs",
+            "agent_knowledge",
+            "agent_projects"
         ]
         
         for directory in directories:
@@ -539,7 +539,7 @@ class IntegratedAgentSystem:
     async def _load_saved_knowledge(self):
         """Загрузка сохраненных знаний"""
         try:
-            knowledge_file = Path("/home/mentor/agent_knowledge/saved_knowledge.json")
+            knowledge_file = Path("agent_knowledge/saved_knowledge.json")
             
             if knowledge_file.exists():
                 with open(knowledge_file, 'r', encoding='utf-8') as f:
@@ -563,7 +563,7 @@ class IntegratedAgentSystem:
     async def save_knowledge(self):
         """Сохранение знаний"""
         try:
-            knowledge_file = Path("/home/mentor/agent_knowledge/saved_knowledge.json")
+            knowledge_file = Path("agent_knowledge/saved_knowledge.json")
             
             # Сохраняем знания
             saved_data = {

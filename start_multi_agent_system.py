@@ -26,7 +26,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('/home/mentor/multi_agent_system.log'),
+        logging.FileHandler('multi_agent_system.log'),
         logging.StreamHandler()
     ]
 )

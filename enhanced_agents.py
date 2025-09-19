@@ -30,7 +30,7 @@ class EnhancedCodeDeveloperAgent(BaseAgent):
             "Создает, отлаживает и оптимизирует код с помощью AI"
         )
         self._setup_skills()
-        self.projects_dir = Path("/home/mentor/agent_projects")
+        self.projects_dir = Path("agent_projects")
         self.projects_dir.mkdir(exist_ok=True)
     
     def _setup_skills(self):
@@ -429,7 +429,7 @@ class EnhancedDataAnalystAgent(BaseAgent):
             "Анализирует данные, создает отчеты и визуализации с помощью AI"
         )
         self._setup_skills()
-        self.data_dir = Path("/home/mentor/agent_data")
+        self.data_dir = Path("agent_data")
         self.data_dir.mkdir(exist_ok=True)
     
     def _setup_skills(self):

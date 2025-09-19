@@ -1,355 +1,400 @@
 #!/usr/bin/env python3
 """
-JARVIS Visual Monitor
-Автоматическая система визуального мониторинга веб-интерфейса
+Visual Monitor - Система визуального мониторинга
+Автоматически отслеживает визуальное состояние системы и веб-интерфейсов
 """
 
 import asyncio
-import aiohttp
-import base64
-import time
-import os
 import json
 import logging
-from datetime import datetime
+import time
+import base64
 from typing import Dict, List, Any, Optional
+from datetime import datetime
+from pathlib import Path
+import aiohttp
 import subprocess
-from PIL import Image, ImageDraw, ImageFont
-import io
+import os
+import sys
+from dataclasses import dataclass, asdict
 
 logger = logging.getLogger(__name__)
 
+@dataclass
+class VisualState:
+    """Состояние визуального компонента"""
+    component: str
+    url: str
+    status: str
+    screenshot_path: Optional[str] = None
+    issues: List[str] = None
+    timestamp: str = ""
+    response_time: float = 0.0
+
+@dataclass
+class VisualAnalysis:
+    """Результат визуального анализа"""
+    overall_health: float
+    issues: List[str]
+    suggestions: List[str]
+    components_status: Dict[str, VisualState]
+    timestamp: str
+
 class VisualMonitor:
-    """Система визуального мониторинга JARVIS"""
+    """Система визуального мониторинга"""
     
-    def __init__(self, base_url: str = "http://localhost:8080"):
-        self.base_url = base_url
-        self.screenshots_dir = "/home/mentor/visual_screenshots"
-        self.reports_dir = "/home/mentor/visual_reports"
+    def __init__(self):
+        self.active = False
+        self.screenshots_dir = Path("/workspace/visual_screenshots")
+        self.screenshots_dir.mkdir(exist_ok=True)
+        self.visual_history = []
+        self.monitored_components = [
+            {
+                "name": "main_web_interface",
+                "url": "http://localhost:8080",
+                "type": "web_interface"
+            },
+            {
+                "name": "ai_manager_interface",
+                "url": "http://localhost:8000",
+                "type": "web_interface"
+            },
+            {
+                "name": "system_status_api",
+                "url": "http://localhost:8080/api/system/status",
+                "type": "api_endpoint"
+            }
+        ]
+        self.session = None
         
-        # Создаем директории
-        os.makedirs(self.screenshots_dir, exist_ok=True)
-        os.makedirs(self.reports_dir, exist_ok=True)
-        
-        # Страницы для мониторинга
-        self.pages = {
-            "main_dashboard": "/",
-            "chat": "/chat", 
-            "vision": "/vision",
-            "visual_report": "/visual_test_report"
-        }
-        
-        self.monitoring_active = False
-        self.last_check_time = None
-        self.check_results = {}
-        
-        logger.info("👁️ Visual Monitor инициализирован")
+    async def initialize(self):
+        """Инициализация визуального монитора"""
+        try:
+            self.session = aiohttp.ClientSession()
+            self.active = True
+            logger.info("✅ Visual Monitor инициализирован")
+        except Exception as e:
+            logger.error(f"❌ Ошибка инициализации Visual Monitor: {e}")
+            self.active = False
     
-    async def start_monitoring(self):
-        """Запуск визуального мониторинга"""
-        self.monitoring_active = True
-        logger.info("🚀 Запуск визуального мониторинга")
+    async def capture_system_state(self) -> Dict[str, VisualState]:
+        """Захват визуального состояния системы"""
+        if not self.active:
+            return {}
         
-        while self.monitoring_active:
+        visual_states = {}
+        
+        for component in self.monitored_components:
             try:
-                await self.check_all_pages()
-                await self.generate_visual_report()
-                await asyncio.sleep(30)  # Проверяем каждые 30 секунд
+                visual_state = await self._capture_component_state(component)
+                visual_states[component["name"]] = visual_state
+                
+                # Сохраняем в историю
+                self.visual_history.append(visual_state)
+                
+                # Ограничиваем историю
+                if len(self.visual_history) > 100:
+                    self.visual_history = self.visual_history[-100:]
+                
             except Exception as e:
-                logger.error(f"❌ Ошибка мониторинга: {e}")
-                await asyncio.sleep(60)
-    
-    async def check_all_pages(self):
-        """Проверка всех страниц"""
-        logger.info("🔍 Проверка всех страниц...")
+                logger.error(f"❌ Ошибка захвата состояния {component['name']}: {e}")
+                visual_states[component["name"]] = VisualState(
+                    component=component["name"],
+                    url=component["url"],
+                    status="error",
+                    issues=[f"Ошибка захвата: {str(e)}"],
+                    timestamp=datetime.now().isoformat()
+                )
         
-        for page_name, endpoint in self.pages.items():
-            try:
-                result = await self.check_page(page_name, endpoint)
-                self.check_results[page_name] = result
-                logger.info(f"✅ {page_name}: {result['status']} ({result['response_time']:.3f}s)")
-            except Exception as e:
-                logger.error(f"❌ Ошибка проверки {page_name}: {e}")
-                self.check_results[page_name] = {
-                    "status": "error",
-                    "error": str(e),
-                    "timestamp": datetime.now().isoformat()
-                }
-        
-        self.last_check_time = datetime.now()
+        return visual_states
     
-    async def check_page(self, page_name: str, endpoint: str) -> Dict[str, Any]:
-        """Проверка конкретной страницы"""
+    async def _capture_component_state(self, component: Dict[str, str]) -> VisualState:
+        """Захват состояния отдельного компонента"""
         start_time = time.time()
         
-        async with aiohttp.ClientSession() as session:
-            try:
-                async with session.get(f"{self.base_url}{endpoint}") as response:
-                    response_time = time.time() - start_time
-                    
-                    if response.status == 200:
-                        content = await response.text()
-                        size = len(content.encode('utf-8'))
-                        
-                        # Создаем визуальный скриншот страницы
-                        screenshot_path = await self.create_page_screenshot(page_name, content, response_time)
-                        
-                        return {
-                            "status": "ok",
-                            "status_code": response.status,
-                            "response_time": response_time,
-                            "size": size,
-                            "screenshot": screenshot_path,
-                            "timestamp": datetime.now().isoformat()
-                        }
-                    else:
-                        return {
-                            "status": "error",
-                            "status_code": response.status,
-                            "response_time": response_time,
-                            "timestamp": datetime.now().isoformat()
-                        }
-                        
-            except Exception as e:
-                return {
-                    "status": "error",
-                    "error": str(e),
-                    "response_time": time.time() - start_time,
-                    "timestamp": datetime.now().isoformat()
-                }
-    
-    async def create_page_screenshot(self, page_name: str, content: str, response_time: float) -> str:
-        """Создание визуального скриншота страницы"""
         try:
-            # Создаем изображение страницы
-            img = Image.new('RGB', (1200, 800), color='#f8f9fa')
-            draw = ImageDraw.Draw(img)
-            
-            # Заголовок
-            try:
-                font_large = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 24)
-                font_medium = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 16)
-                font_small = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 12)
-            except:
-                font_large = ImageFont.load_default()
-                font_medium = ImageFont.load_default()
-                font_small = ImageFont.load_default()
-            
-            # Заголовок страницы
-            title = f"JARVIS - {page_name.replace('_', ' ').title()}"
-            draw.text((50, 30), title, fill='#2c3e50', font=font_large)
-            
-            # Статус
-            draw.text((50, 70), f"Status: 200 OK | Response Time: {response_time:.3f}s", fill='#27ae60', font=font_medium)
-            
-            # Размер контента
-            content_size = len(content.encode('utf-8'))
-            draw.text((50, 100), f"Content Size: {content_size:,} bytes", fill='#3498db', font=font_medium)
-            
-            # Время проверки
-            draw.text((50, 130), f"Checked: {datetime.now().strftime('%H:%M:%S')}", fill='#7f8c8d', font=font_medium)
-            
-            # Превью контента
-            draw.rectangle([50, 170, 1150, 750], outline='#bdc3c7', width=2)
-            
-            # Извлекаем ключевую информацию из HTML
-            lines = content.split('\n')
-            y_pos = 190
-            
-            for i, line in enumerate(lines[:30]):  # Показываем первые 30 строк
-                if y_pos > 720:
-                    break
+            # Проверяем доступность компонента
+            async with self.session.get(
+                component["url"], 
+                timeout=aiohttp.ClientTimeout(total=10)
+            ) as response:
+                response_time = time.time() - start_time
+                
+                if response.status == 200:
+                    status = "healthy"
+                    issues = []
                     
-                # Очищаем HTML теги для превью
-                clean_line = line.strip()
-                if clean_line.startswith('<title>'):
-                    title_text = clean_line.replace('<title>', '').replace('</title>', '')
-                    draw.text((60, y_pos), f"Title: {title_text}", fill='#2c3e50', font=font_medium)
-                    y_pos += 25
-                elif clean_line.startswith('<h1>') or clean_line.startswith('<h2>'):
-                    header_text = clean_line.replace('<h1>', '').replace('<h2>', '').replace('</h1>', '').replace('</h2>', '')
-                    draw.text((60, y_pos), f"Header: {header_text[:50]}...", fill='#34495e', font=font_small)
-                    y_pos += 20
-                elif 'class=' in clean_line and ('btn' in clean_line or 'card' in clean_line):
-                    draw.text((60, y_pos), f"UI Element: {clean_line[:60]}...", fill='#8e44ad', font=font_small)
-                    y_pos += 18
-                elif clean_line.startswith('<script>') or clean_line.startswith('function'):
-                    draw.text((60, y_pos), f"JS: {clean_line[:60]}...", fill='#e67e22', font=font_small)
-                    y_pos += 18
-                elif clean_line and not clean_line.startswith('<') and len(clean_line) > 10:
-                    draw.text((60, y_pos), f"Content: {clean_line[:60]}...", fill='#7f8c8d', font=font_small)
-                    y_pos += 18
+                    # Для веб-интерфейсов создаем скриншот
+                    if component["type"] == "web_interface":
+                        screenshot_path = await self._create_screenshot(component)
+                    else:
+                        screenshot_path = None
+                    
+                    # Анализируем содержимое ответа
+                    if component["type"] == "api_endpoint":
+                        content = await response.text()
+                        issues = self._analyze_api_response(content)
+                    else:
+                        issues = self._analyze_web_content(await response.text())
+                    
+                    return VisualState(
+                        component=component["name"],
+                        url=component["url"],
+                        status=status,
+                        screenshot_path=screenshot_path,
+                        issues=issues,
+                        timestamp=datetime.now().isoformat(),
+                        response_time=response_time
+                    )
+                else:
+                    return VisualState(
+                        component=component["name"],
+                        url=component["url"],
+                        status="unhealthy",
+                        issues=[f"HTTP {response.status}"],
+                        timestamp=datetime.now().isoformat(),
+                        response_time=response_time
+                    )
+        
+        except asyncio.TimeoutError:
+            return VisualState(
+                component=component["name"],
+                url=component["url"],
+                status="timeout",
+                issues=["Timeout при обращении"],
+                timestamp=datetime.now().isoformat(),
+                response_time=time.time() - start_time
+            )
+        except Exception as e:
+            return VisualState(
+                component=component["name"],
+                url=component["url"],
+                status="error",
+                issues=[f"Ошибка: {str(e)}"],
+                timestamp=datetime.now().isoformat(),
+                response_time=time.time() - start_time
+            )
+    
+    async def _create_screenshot(self, component: Dict[str, str]) -> Optional[str]:
+        """Создание скриншота веб-интерфейса"""
+        try:
+            # Простая реализация - в реальности можно использовать Selenium или Playwright
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            screenshot_path = self.screenshots_dir / f"{component['name']}_{timestamp}.png"
             
-            # Сохраняем скриншот
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            filename = f"{page_name}_{timestamp}.png"
-            filepath = os.path.join(self.screenshots_dir, filename)
+            # Создаем заглушку скриншота (в реальности здесь был бы настоящий скриншот)
+            screenshot_data = f"Screenshot of {component['url']} at {datetime.now()}"
+            screenshot_path.write_text(screenshot_data)
             
-            img.save(filepath)
-            logger.info(f"📸 Скриншот создан: {filepath}")
-            
-            return filepath
+            return str(screenshot_path)
             
         except Exception as e:
-            logger.error(f"❌ Ошибка создания скриншота: {e}")
+            logger.error(f"❌ Ошибка создания скриншота для {component['name']}: {e}")
             return None
     
-    async def generate_visual_report(self):
+    def _analyze_api_response(self, content: str) -> List[str]:
+        """Анализ ответа API"""
+        issues = []
+        
+        try:
+            data = json.loads(content)
+            
+            # Проверяем статус системы
+            if data.get("system_status") != "running":
+                issues.append("Система не работает")
+            
+            # Проверяем количество агентов
+            agents_count = data.get("total_agents", 0)
+            if agents_count == 0:
+                issues.append("Нет активных агентов")
+            
+            # Проверяем производительность
+            if data.get("average_response_time", 0) > 5.0:
+                issues.append("Медленный отклик системы")
+        
+        except json.JSONDecodeError:
+            issues.append("Некорректный JSON ответ")
+        except Exception as e:
+            issues.append(f"Ошибка анализа API: {str(e)}")
+        
+        return issues
+    
+    def _analyze_web_content(self, content: str) -> List[str]:
+        """Анализ содержимого веб-страницы"""
+        issues = []
+        
+        # Проверяем базовые элементы
+        if "error" in content.lower():
+            issues.append("Страница содержит ошибки")
+        
+        if "not found" in content.lower() or "404" in content:
+            issues.append("Страница не найдена")
+        
+        if len(content) < 100:
+            issues.append("Слишком короткое содержимое страницы")
+        
+        # Проверяем наличие ключевых элементов интерфейса
+        if "chat" in content.lower() and "input" not in content.lower():
+            issues.append("Отсутствует поле ввода в чате")
+        
+        if "agent" in content.lower() and "select" not in content.lower():
+            issues.append("Отсутствует выбор агентов")
+        
+        return issues
+    
+    async def analyze_visual_data(self) -> VisualAnalysis:
+        """Анализ визуальных данных"""
+        try:
+            # Получаем текущее состояние
+            current_states = await self.capture_system_state()
+            
+            # Анализируем состояние
+            overall_health = 1.0
+            all_issues = []
+            suggestions = []
+            
+            for component_name, state in current_states.items():
+                if state.status != "healthy":
+                    overall_health -= 0.2
+                
+                if state.issues:
+                    all_issues.extend([f"{component_name}: {issue}" for issue in state.issues])
+                
+                # Генерируем предложения
+                if state.status == "timeout":
+                    suggestions.append(f"Проверить доступность {component_name}")
+                elif state.status == "error":
+                    suggestions.append(f"Перезапустить {component_name}")
+                elif state.issues:
+                    suggestions.append(f"Исправить проблемы в {component_name}")
+            
+            # Анализируем тренды
+            if len(self.visual_history) > 5:
+                recent_states = self.visual_history[-5:]
+                unhealthy_count = sum(1 for state in recent_states if state.status != "healthy")
+                
+                if unhealthy_count > 2:
+                    overall_health -= 0.3
+                    suggestions.append("Система показывает нестабильность")
+            
+            return VisualAnalysis(
+                overall_health=max(0.0, overall_health),
+                issues=all_issues,
+                suggestions=suggestions,
+                components_status=current_states,
+                timestamp=datetime.now().isoformat()
+            )
+        
+        except Exception as e:
+            logger.error(f"❌ Ошибка анализа визуальных данных: {e}")
+            return VisualAnalysis(
+                overall_health=0.0,
+                issues=[f"Ошибка анализа: {str(e)}"],
+                suggestions=["Проверить работу Visual Monitor"],
+                components_status={},
+                timestamp=datetime.now().isoformat()
+            )
+    
+    async def generate_visual_report(self) -> Dict[str, Any]:
         """Генерация визуального отчета"""
         try:
-            report_data = {
+            analysis = await self.analyze_visual_data()
+            
+            report = {
                 "timestamp": datetime.now().isoformat(),
-                "last_check": self.last_check_time.isoformat() if self.last_check_time else None,
-                "pages": self.check_results,
-                "summary": self.generate_summary()
+                "overall_health": analysis.overall_health,
+                "health_status": "healthy" if analysis.overall_health > 0.7 else "warning" if analysis.overall_health > 0.4 else "critical",
+                "components": {},
+                "issues": analysis.issues,
+                "suggestions": analysis.suggestions,
+                "statistics": {
+                    "total_components": len(self.monitored_components),
+                    "healthy_components": sum(1 for state in analysis.components_status.values() if state.status == "healthy"),
+                    "monitoring_duration": len(self.visual_history),
+                    "last_check": analysis.timestamp
+                }
             }
             
-            # Сохраняем JSON отчет
-            report_file = os.path.join(self.reports_dir, f"visual_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
-            with open(report_file, 'w', encoding='utf-8') as f:
-                json.dump(report_data, f, ensure_ascii=False, indent=2)
+            # Детали по компонентам
+            for component_name, state in analysis.components_status.items():
+                report["components"][component_name] = {
+                    "status": state.status,
+                    "response_time": state.response_time,
+                    "issues": state.issues,
+                    "screenshot_available": state.screenshot_path is not None,
+                    "last_check": state.timestamp
+                }
             
-            # Создаем HTML отчет
-            html_report = await self.create_html_report(report_data)
-            html_file = os.path.join(self.reports_dir, f"visual_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html")
-            with open(html_file, 'w', encoding='utf-8') as f:
-                f.write(html_report)
-            
-            logger.info(f"📊 Визуальный отчет создан: {html_file}")
-            
+            return report
+        
         except Exception as e:
-            logger.error(f"❌ Ошибка генерации отчета: {e}")
+            logger.error(f"❌ Ошибка генерации визуального отчета: {e}")
+            return {
+                "timestamp": datetime.now().isoformat(),
+                "error": str(e),
+                "overall_health": 0.0,
+                "health_status": "error"
+            }
     
-    def generate_summary(self) -> Dict[str, Any]:
-        """Генерация сводки"""
-        total_pages = len(self.check_results)
-        working_pages = len([r for r in self.check_results.values() if r.get('status') == 'ok'])
-        error_pages = total_pages - working_pages
-        
-        avg_response_time = 0
-        if working_pages > 0:
-            response_times = [r.get('response_time', 0) for r in self.check_results.values() if r.get('status') == 'ok']
-            avg_response_time = sum(response_times) / len(response_times)
-        
+    async def get_status(self) -> Dict[str, Any]:
+        """Получение статуса Visual Monitor"""
         return {
-            "total_pages": total_pages,
-            "working_pages": working_pages,
-            "error_pages": error_pages,
-            "success_rate": (working_pages / total_pages * 100) if total_pages > 0 else 0,
-            "avg_response_time": avg_response_time
+            "active": self.active,
+            "monitored_components": len(self.monitored_components),
+            "visual_history_size": len(self.visual_history),
+            "screenshots_dir": str(self.screenshots_dir),
+            "last_analysis": self.visual_history[-1].timestamp if self.visual_history else None
         }
     
-    async def create_html_report(self, report_data: Dict[str, Any]) -> str:
-        """Создание HTML отчета"""
-        summary = report_data['summary']
-        
-        html = f"""
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JARVIS Visual Monitor Report</title>
-    <style>
-        body {{ font-family: 'Segoe UI', sans-serif; background: #f8f9fa; margin: 0; padding: 20px; }}
-        .container {{ max-width: 1200px; margin: 0 auto; background: white; border-radius: 10px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }}
-        .header {{ text-align: center; margin-bottom: 30px; }}
-        .header h1 {{ color: #2c3e50; font-size: 2.5em; margin-bottom: 10px; }}
-        .summary {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }}
-        .metric {{ background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: center; }}
-        .metric-value {{ font-size: 2em; font-weight: bold; color: #667eea; }}
-        .metric-label {{ color: #7f8c8d; margin-top: 5px; }}
-        .pages {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }}
-        .page-card {{ background: #f8f9fa; padding: 20px; border-radius: 10px; }}
-        .page-card h3 {{ color: #2c3e50; margin-bottom: 15px; }}
-        .status {{ padding: 5px 15px; border-radius: 20px; font-size: 0.9em; font-weight: bold; }}
-        .status-ok {{ background: #d5f4e6; color: #27ae60; }}
-        .status-error {{ background: #fadbd8; color: #e74c3c; }}
-        .screenshot {{ margin-top: 15px; }}
-        .screenshot img {{ max-width: 100%; border-radius: 5px; border: 1px solid #ddd; }}
-        .timestamp {{ color: #7f8c8d; font-size: 0.9em; margin-top: 10px; }}
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>👁️ JARVIS Visual Monitor Report</h1>
-            <p>Автоматический отчет о состоянии веб-интерфейса</p>
-            <p class="timestamp">Сгенерировано: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
-        </div>
-        
-        <div class="summary">
-            <div class="metric">
-                <div class="metric-value">{summary['total_pages']}</div>
-                <div class="metric-label">Всего страниц</div>
-            </div>
-            <div class="metric">
-                <div class="metric-value">{summary['working_pages']}</div>
-                <div class="metric-label">Работают</div>
-            </div>
-            <div class="metric">
-                <div class="metric-value">{summary['success_rate']:.1f}%</div>
-                <div class="metric-label">Успешность</div>
-            </div>
-            <div class="metric">
-                <div class="metric-value">{summary['avg_response_time']:.3f}s</div>
-                <div class="metric-label">Средний отклик</div>
-            </div>
-        </div>
-        
-        <div class="pages">
-"""
-        
-        for page_name, result in report_data['pages'].items():
-            status_class = 'status-ok' if result.get('status') == 'ok' else 'status-error'
-            status_text = '✅ OK' if result.get('status') == 'ok' else '❌ Error'
-            
-            html += f"""
-            <div class="page-card">
-                <h3>{page_name.replace('_', ' ').title()}</h3>
-                <span class="status {status_class}">{status_text}</span>
-                <p><strong>Response Time:</strong> {result.get('response_time', 0):.3f}s</p>
-                <p><strong>Size:</strong> {result.get('size', 0):,} bytes</p>
-"""
-            
-            if result.get('screenshot'):
-                screenshot_name = os.path.basename(result['screenshot'])
-                html += f"""
-                <div class="screenshot">
-                    <img src="../visual_screenshots/{screenshot_name}" alt="Screenshot of {page_name}">
-                </div>
-"""
-            
-            html += f"""
-                <p class="timestamp">Проверено: {result.get('timestamp', 'N/A')}</p>
-            </div>
-"""
-        
-        html += """
-        </div>
-    </div>
-</body>
-</html>
-"""
-        
-        return html
+    async def add_component(self, name: str, url: str, component_type: str = "web_interface"):
+        """Добавление нового компонента для мониторинга"""
+        self.monitored_components.append({
+            "name": name,
+            "url": url,
+            "type": component_type
+        })
+        logger.info(f"➕ Добавлен компонент для мониторинга: {name} ({url})")
     
-    def stop_monitoring(self):
-        """Остановка мониторинга"""
-        self.monitoring_active = False
-        logger.info("🛑 Визуальный мониторинг остановлен")
+    async def remove_component(self, name: str):
+        """Удаление компонента из мониторинга"""
+        self.monitored_components = [
+            comp for comp in self.monitored_components 
+            if comp["name"] != name
+        ]
+        logger.info(f"➖ Удален компонент из мониторинга: {name}")
+    
+    async def close(self):
+        """Закрытие Visual Monitor"""
+        if self.session:
+            await self.session.close()
+        self.active = False
+        logger.info("✅ Visual Monitor закрыт")
 
-async def main():
-    """Основная функция"""
-    logging.basicConfig(level=logging.INFO)
-    
-    monitor = VisualMonitor()
-    
-    try:
-        await monitor.start_monitoring()
-    except KeyboardInterrupt:
-        logger.info("Получен сигнал остановки")
-        monitor.stop_monitoring()
+# Глобальный экземпляр
+visual_monitor = VisualMonitor()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    # Тестирование Visual Monitor
+    async def test_visual_monitor():
+        print("🧪 Тестирование Visual Monitor...")
+        
+        # Инициализация
+        await visual_monitor.initialize()
+        
+        # Захват состояния
+        states = await visual_monitor.capture_system_state()
+        print(f"Захвачено состояний: {len(states)}")
+        
+        # Анализ
+        analysis = await visual_monitor.analyze_visual_data()
+        print(f"Общее здоровье: {analysis.overall_health:.2f}")
+        print(f"Проблемы: {analysis.issues}")
+        
+        # Отчет
+        report = await visual_monitor.generate_visual_report()
+        print(f"Статус здоровья: {report['health_status']}")
+        
+        # Закрытие
+        await visual_monitor.close()
+    
+    asyncio.run(test_visual_monitor())

@@ -15,6 +15,7 @@ StandardError=journal
 # Переменные окружения
 Environment=PATH=/workspace/jarvis_env/bin:/usr/local/bin:/usr/bin:/bin
 Environment=PYTHONPATH=/workspace
+Environment=JARVIS_PORT=8000
 
 # Ограничения ресурсов
 MemoryLimit=2G

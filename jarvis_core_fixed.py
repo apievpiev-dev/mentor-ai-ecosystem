@@ -407,7 +407,7 @@ class JarvisCore:
     def _run_web_server(self):
         """Запуск веб-сервера"""
         try:
-            uvicorn.run(self.app, host="0.0.0.0", port=8080, log_level="info")
+            uvicorn.run(self.app, host="0.0.0.0", port=8000, log_level="info")
         except Exception as e:
             logger.error(f"❌ Ошибка запуска веб-сервера: {e}")
 

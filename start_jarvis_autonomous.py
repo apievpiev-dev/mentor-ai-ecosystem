@@ -79,7 +79,7 @@ class JarvisAutonomousLauncher:
         """Проверка здоровья JARVIS"""
         try:
             import requests
-            response = requests.get("http://localhost:8080/api/system/status", timeout=5)
+            response = requests.get("http://localhost:8000/api/system/status", timeout=5)
             return response.status_code == 200
         except:
             return False
@@ -153,8 +153,8 @@ class JarvisAutonomousLauncher:
         # Проверяем, что JARVIS запустился
         if self.check_jarvis_health():
             logger.info("✅ JARVIS успешно запущен и работает!")
-            logger.info("🌐 Веб-интерфейс доступен: http://localhost:8080")
-            logger.info("📊 API статуса: http://localhost:8080/api/system/status")
+            logger.info("🌐 Веб-интерфейс доступен: http://localhost:8000")
+            logger.info("📊 API статуса: http://localhost:8000/api/system/status")
         else:
             logger.warning("⚠️ JARVIS запущен, но API недоступен")
         

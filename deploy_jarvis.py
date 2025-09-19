@@ -85,7 +85,7 @@ class JarvisDeployer:
             
             # Проверяем API
             import requests
-            response = requests.get("http://localhost:8080/api/system/status", timeout=5)
+            response = requests.get("http://localhost:8000/api/system/status", timeout=5)
             if response.status_code == 200:
                 logger.info("✅ JARVIS API работает корректно")
                 return True
@@ -102,9 +102,9 @@ class JarvisDeployer:
         logger.info("🔥 Настройка файрвола...")
         
         try:
-            # Разрешаем порт 8080
+            # Разрешаем порт 8000
             subprocess.run([
-                "sudo", "ufw", "allow", "8080"
+                "sudo", "ufw", "allow", "8000"
             ], check=True)
             
             logger.info("✅ Файрвол настроен")
@@ -169,8 +169,8 @@ echo "✅ JARVIS запущен!"
             return False
         
         logger.info("🎉 JARVIS успешно развернут!")
-        logger.info("🌐 Веб-интерфейс: http://localhost:8080")
-        logger.info("📊 API статуса: http://localhost:8080/api/system/status")
+        logger.info("🌐 Веб-интерфейс: http://localhost:8000")
+        logger.info("📊 API статуса: http://localhost:8000/api/system/status")
         logger.info("🔧 Управление сервисом:")
         logger.info("   sudo systemctl start jarvis    - запустить")
         logger.info("   sudo systemctl stop jarvis     - остановить")

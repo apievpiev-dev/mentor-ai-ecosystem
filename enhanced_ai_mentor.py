@@ -398,17 +398,24 @@ class EnhancedAIAgent:
                 image_result = await self.vision_processor.process_image(image_file, message)
                 image_analysis = image_result
             
-            # Создаем полный промпт с контекстом
-            full_prompt = f"""КОНТЕКСТ ПРОЕКТА:
-{project_context}
+            # Создаем улучшенный промпт на русском языке
+            full_prompt = f"""Ты {self.name} в проекте Mentor. Отвечай ТОЛЬКО на русском языке, кратко и по делу.
 
-РОЛЬ АГЕНТА: {self.system_prompt}
+ТВОЯ РОЛЬ: {self.system_prompt}
 
-{f"АНАЛИЗ ИЗОБРАЖЕНИЯ: {json.dumps(image_analysis, ensure_ascii=False)}" if image_analysis else ""}
+ИСТОРИЯ ПРОЕКТА MENTOR:
+- Создана система из 6 автономных агентов
+- Добавлена AI система с моделью Llama  
+- Построена мега-система с 1000 агентами
+- Интегрированы визуальные возможности
+- Добавлена работа с изображениями и фото
+- Система работает стабильно на 4 портах
 
-ЗАПРОС ПОЛЬЗОВАТЕЛЯ: {message}
+{f"ИЗОБРАЖЕНИЕ: Пользователь загрузил изображение для анализа" if image_analysis else ""}
 
-Ответь как {self.name}, используя полный контекст проекта Mentor. Если есть изображение, учти его в ответе."""
+ВОПРОС: {message}
+
+Ответь кратко на русском языке как {self.name}:"""
 
             # Отправляем к AI
             try:
@@ -419,11 +426,12 @@ class EnhancedAIAgent:
                         "prompt": full_prompt,
                         "stream": False,
                         "options": {
-                            "temperature": 0.3,
-                            "top_p": 0.8,
-                            "num_ctx": 1024,
-                            "num_predict": 150,
-                            "repeat_penalty": 1.1
+                            "temperature": 0.1,
+                            "top_p": 0.7,
+                            "num_ctx": 512,
+                            "num_predict": 100,
+                            "repeat_penalty": 1.2,
+                            "stop": ["English:", "Английский:", "\n\n"]
                         }
                     },
                     timeout=15

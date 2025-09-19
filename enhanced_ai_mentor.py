@@ -398,24 +398,23 @@ class EnhancedAIAgent:
                 image_result = await self.vision_processor.process_image(image_file, message)
                 image_analysis = image_result
             
-            # Создаем улучшенный промпт на русском языке
-            full_prompt = f"""Ты {self.name} в проекте Mentor. Отвечай ТОЛЬКО на русском языке, кратко и по делу.
+            # Создаем жесткий промпт только на русском
+            full_prompt = f"""ВАЖНО: Отвечай ТОЛЬКО на русском языке! Никакого английского!
 
-ТВОЯ РОЛЬ: {self.system_prompt}
+Ты {self.name}. 
 
-ИСТОРИЯ ПРОЕКТА MENTOR:
-- Создана система из 6 автономных агентов
-- Добавлена AI система с моделью Llama  
-- Построена мега-система с 1000 агентами
-- Интегрированы визуальные возможности
-- Добавлена работа с изображениями и фото
-- Система работает стабильно на 4 портах
-
-{f"ИЗОБРАЖЕНИЕ: Пользователь загрузил изображение для анализа" if image_analysis else ""}
+ПРОЕКТ MENTOR:
+Создана многоуровневая AI система:
+- 6 простых агентов (порт 8081)
+- 6 AI агентов с Llama (порт 8082) 
+- 1000 мега-агентов (порт 9000)
+- Панель управления (порт 8083)
+- Работа с изображениями и фото
+- Полная автономность и самоулучшение
 
 ВОПРОС: {message}
 
-Ответь кратко на русском языке как {self.name}:"""
+Ответь кратко по-русски:"""
 
             # Отправляем к AI
             try:
@@ -442,6 +441,9 @@ class EnhancedAIAgent:
                 if response.status_code == 200:
                     ai_response = response.json().get("response", "").strip()
                     
+                    # Улучшаем качество ответа
+                    ai_response = await self.ensure_ai_quality(ai_response)
+                    
                     # Сохраняем в память проекта
                     self.project_memory.add_interaction(message, ai_response, self.agent_type)
                     
@@ -460,24 +462,23 @@ class EnhancedAIAgent:
                     if image_analysis:
                         result["image_analysis"] = image_analysis
                     
-                    logger.info(f"🧠 {self.name} ответил с контекстом за {response_time:.2f}с")
+                    logger.info(f"🧠 {self.name} ответил качественно за {response_time:.2f}с")
                     return result
                     
                 else:
                     raise Exception(f"AI error: {response.status_code}")
                     
             except Exception as ai_error:
-                # Fallback с контекстом
-                fallback_response = self.get_contextual_fallback(message, image_analysis)
+                # Если AI не работает - возвращаем ошибку, НЕ fallback
+                logger.error(f"❌ AI недоступен для {self.name}: {ai_error}")
                 
                 return {
-                    "response": fallback_response,
+                    "response": f"❌ AI агент {self.name} временно недоступен. Попробуйте позже.",
                     "agent": self.name,
                     "agent_type": self.agent_type,
                     "timestamp": datetime.now().isoformat(),
-                    "success": True,
+                    "success": False,
                     "ai_used": False,
-                    "has_context": True,
                     "ai_error": str(ai_error),
                     "image_processed": image_analysis is not None
                 }
@@ -490,33 +491,35 @@ class EnhancedAIAgent:
                 "success": False
             }
     
-    def get_contextual_fallback(self, message: str, image_analysis: Optional[Dict] = None) -> str:
-        """Fallback ответ с учетом контекста"""
-        context_info = f"Я {self.name}, работаю в проекте Mentor с полной историей. "
-        
-        if image_analysis:
-            if image_analysis.get("status") == "success":
-                img_info = image_analysis.get("analysis", {})
-                context_info += f"Анализирую изображение {img_info.get('dimensions', {})}. "
+    async def ensure_ai_quality(self, response: str) -> str:
+        """Проверка и улучшение качества AI ответа"""
+        # Проверяем что ответ на русском языке
+        if len([c for c in response if ord(c) > 1000]) < len(response) * 0.3:
+            # Слишком мало русских символов - переспрашиваем AI
+            retry_prompt = f"""Ответь на русском языке кратко и понятно на вопрос пользователя.
+            Ты {self.name} в проекте Mentor. Не используй английский язык."""
+            
+            try:
+                retry_response = requests.post(
+                    "http://localhost:11434/api/generate",
+                    json={
+                        "model": "llama3.2:1b-instruct-q4_0", 
+                        "prompt": retry_prompt,
+                        "stream": False,
+                        "options": {"temperature": 0.1, "num_predict": 50}
+                    },
+                    timeout=10
+                )
                 
-                if "clothing" in image_analysis.get("task_description", "").lower():
-                    context_info += "Вижу задачу с одеждой - могу помочь с виртуальной примеркой. "
+                if retry_response.status_code == 200:
+                    better_response = retry_response.json().get("response", "").strip()
+                    if better_response and len(better_response) > 10:
+                        return better_response
+                        
+            except:
+                pass
         
-        context_info += f"Ваш запрос: '{message}'. "
-        
-        # Добавляем специфику роли
-        role_responses = {
-            "general_assistant": "Координирую работу всех систем Mentor и помогаю с любыми вопросами.",
-            "code_developer": "Анализирую код проекта (1000+ файлов) и предлагаю улучшения.",
-            "data_analyst": "Обрабатываю данные и метрики всех систем Mentor.",
-            "project_manager": "Планирую развитие проекта на основе полной истории.",
-            "designer": "Улучшаю UI/UX всех интерфейсов системы.",
-            "qa_tester": "Тестирую все компоненты системы на качество."
-        }
-        
-        context_info += role_responses.get(self.agent_type, "Помогаю с вашим запросом.")
-        
-        return context_info
+        return response
 
 # Создаем улучшенную систему
 project_memory = ProjectMemory()

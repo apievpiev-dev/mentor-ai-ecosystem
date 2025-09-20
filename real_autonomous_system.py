@@ -27,7 +27,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('/home/mentor/real_autonomous_system.log'),
+        logging.FileHandler('/workspace/real_autonomous_system.log'),
         logging.StreamHandler()
     ]
 )

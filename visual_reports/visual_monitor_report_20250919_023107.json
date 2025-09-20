@@ -1,0 +1,306 @@
+{
+  "timestamp": "2025-09-19T02:31:07.966238",
+  "monitoring_stats": {
+    "screenshots_taken": 20,
+    "issues_found": 0,
+    "fixes_applied": 0,
+    "monitoring_active": true
+  },
+  "recent_checks": [
+    {
+      "timestamp": "2025-09-19T02:22:07.328392",
+      "screenshot_number": 11,
+      "screenshot_path": "/workspace/visual_screenshots/visual_snapshot_20250919_022207.png",
+      "analysis": {
+        "content_size": 12622,
+        "has_title": true,
+        "title_text": "🧠 Mentor Autonomous AI System",
+        "has_css": true,
+        "has_javascript": true,
+        "has_russian": true,
+        "responsive_design": true,
+        "modern_css": true,
+        "ui_elements": {
+          "buttons": 5,
+          "inputs": 1,
+          "divs": 25,
+          "cards": 5,
+          "containers": 6
+        },
+        "performance_indicators": {
+          "estimated_load_time": 1.2622,
+          "css_complexity": 63,
+          "js_complexity": 9
+        }
+      },
+      "issues_found": [],
+      "status": "completed"
+    },
+    {
+      "timestamp": "2025-09-19T02:23:07.380924",
+      "screenshot_number": 12,
+      "screenshot_path": "/workspace/visual_screenshots/visual_snapshot_20250919_022307.png",
+      "analysis": {
+        "content_size": 12622,
+        "has_title": true,
+        "title_text": "🧠 Mentor Autonomous AI System",
+        "has_css": true,
+        "has_javascript": true,
+        "has_russian": true,
+        "responsive_design": true,
+        "modern_css": true,
+        "ui_elements": {
+          "buttons": 5,
+          "inputs": 1,
+          "divs": 25,
+          "cards": 5,
+          "containers": 6
+        },
+        "performance_indicators": {
+          "estimated_load_time": 1.2622,
+          "css_complexity": 63,
+          "js_complexity": 9
+        }
+      },
+      "issues_found": [],
+      "status": "completed"
+    },
+    {
+      "timestamp": "2025-09-19T02:24:07.468605",
+      "screenshot_number": 13,
+      "screenshot_path": "/workspace/visual_screenshots/visual_snapshot_20250919_022407.png",
+      "analysis": {
+        "content_size": 12622,
+        "has_title": true,
+        "title_text": "🧠 Mentor Autonomous AI System",
+        "has_css": true,
+        "has_javascript": true,
+        "has_russian": true,
+        "responsive_design": true,
+        "modern_css": true,
+        "ui_elements": {
+          "buttons": 5,
+          "inputs": 1,
+          "divs": 25,
+          "cards": 5,
+          "containers": 6
+        },
+        "performance_indicators": {
+          "estimated_load_time": 1.2622,
+          "css_complexity": 63,
+          "js_complexity": 9
+        }
+      },
+      "issues_found": [],
+      "status": "completed"
+    },
+    {
+      "timestamp": "2025-09-19T02:25:07.549318",
+      "screenshot_number": 14,
+      "screenshot_path": "/workspace/visual_screenshots/visual_snapshot_20250919_022507.png",
+      "analysis": {
+        "content_size": 12622,
+        "has_title": true,
+        "title_text": "🧠 Mentor Autonomous AI System",
+        "has_css": true,
+        "has_javascript": true,
+        "has_russian": true,
+        "responsive_design": true,
+        "modern_css": true,
+        "ui_elements": {
+          "buttons": 5,
+          "inputs": 1,
+          "divs": 25,
+          "cards": 5,
+          "containers": 6
+        },
+        "performance_indicators": {
+          "estimated_load_time": 1.2622,
+          "css_complexity": 63,
+          "js_complexity": 9
+        }
+      },
+      "issues_found": [],
+      "status": "completed"
+    },
+    {
+      "timestamp": "2025-09-19T02:26:07.617437",
+      "screenshot_number": 15,
+      "screenshot_path": "/workspace/visual_screenshots/visual_snapshot_20250919_022607.png",
+      "analysis": {
+        "content_size": 12622,
+        "has_title": true,
+        "title_text": "🧠 Mentor Autonomous AI System",
+        "has_css": true,
+        "has_javascript": true,
+        "has_russian": true,
+        "responsive_design": true,
+        "modern_css": true,
+        "ui_elements": {
+          "buttons": 5,
+          "inputs": 1,
+          "divs": 25,
+          "cards": 5,
+          "containers": 6
+        },
+        "performance_indicators": {
+          "estimated_load_time": 1.2622,
+          "css_complexity": 63,
+          "js_complexity": 9
+        }
+      },
+      "issues_found": [],
+      "status": "completed"
+    },
+    {
+      "timestamp": "2025-09-19T02:27:07.686625",
+      "screenshot_number": 16,
+      "screenshot_path": "/workspace/visual_screenshots/visual_snapshot_20250919_022707.png",
+      "analysis": {
+        "content_size": 12622,
+        "has_title": true,
+        "title_text": "🧠 Mentor Autonomous AI System",
+        "has_css": true,
+        "has_javascript": true,
+        "has_russian": true,
+        "responsive_design": true,
+        "modern_css": true,
+        "ui_elements": {
+          "buttons": 5,
+          "inputs": 1,
+          "divs": 25,
+          "cards": 5,
+          "containers": 6
+        },
+        "performance_indicators": {
+          "estimated_load_time": 1.2622,
+          "css_complexity": 63,
+          "js_complexity": 9
+        }
+      },
+      "issues_found": [],
+      "status": "completed"
+    },
+    {
+      "timestamp": "2025-09-19T02:28:07.746690",
+      "screenshot_number": 17,
+      "screenshot_path": "/workspace/visual_screenshots/visual_snapshot_20250919_022807.png",
+      "analysis": {
+        "content_size": 12622,
+        "has_title": true,
+        "title_text": "🧠 Mentor Autonomous AI System",
+        "has_css": true,
+        "has_javascript": true,
+        "has_russian": true,
+        "responsive_design": true,
+        "modern_css": true,
+        "ui_elements": {
+          "buttons": 5,
+          "inputs": 1,
+          "divs": 25,
+          "cards": 5,
+          "containers": 6
+        },
+        "performance_indicators": {
+          "estimated_load_time": 1.2622,
+          "css_complexity": 63,
+          "js_complexity": 9
+        }
+      },
+      "issues_found": [],
+      "status": "completed"
+    },
+    {
+      "timestamp": "2025-09-19T02:29:07.802453",
+      "screenshot_number": 18,
+      "screenshot_path": "/workspace/visual_screenshots/visual_snapshot_20250919_022907.png",
+      "analysis": {
+        "content_size": 12622,
+        "has_title": true,
+        "title_text": "🧠 Mentor Autonomous AI System",
+        "has_css": true,
+        "has_javascript": true,
+        "has_russian": true,
+        "responsive_design": true,
+        "modern_css": true,
+        "ui_elements": {
+          "buttons": 5,
+          "inputs": 1,
+          "divs": 25,
+          "cards": 5,
+          "containers": 6
+        },
+        "performance_indicators": {
+          "estimated_load_time": 1.2622,
+          "css_complexity": 63,
+          "js_complexity": 9
+        }
+      },
+      "issues_found": [],
+      "status": "completed"
+    },
+    {
+      "timestamp": "2025-09-19T02:30:07.881372",
+      "screenshot_number": 19,
+      "screenshot_path": "/workspace/visual_screenshots/visual_snapshot_20250919_023007.png",
+      "analysis": {
+        "content_size": 12622,
+        "has_title": true,
+        "title_text": "🧠 Mentor Autonomous AI System",
+        "has_css": true,
+        "has_javascript": true,
+        "has_russian": true,
+        "responsive_design": true,
+        "modern_css": true,
+        "ui_elements": {
+          "buttons": 5,
+          "inputs": 1,
+          "divs": 25,
+          "cards": 5,
+          "containers": 6
+        },
+        "performance_indicators": {
+          "estimated_load_time": 1.2622,
+          "css_complexity": 63,
+          "js_complexity": 9
+        }
+      },
+      "issues_found": [],
+      "status": "completed"
+    },
+    {
+      "timestamp": "2025-09-19T02:31:07.960671",
+      "screenshot_number": 20,
+      "screenshot_path": "/workspace/visual_screenshots/visual_snapshot_20250919_023107.png",
+      "analysis": {
+        "content_size": 12622,
+        "has_title": true,
+        "title_text": "🧠 Mentor Autonomous AI System",
+        "has_css": true,
+        "has_javascript": true,
+        "has_russian": true,
+        "responsive_design": true,
+        "modern_css": true,
+        "ui_elements": {
+          "buttons": 5,
+          "inputs": 1,
+          "divs": 25,
+          "cards": 5,
+          "containers": 6
+        },
+        "performance_indicators": {
+          "estimated_load_time": 1.2622,
+          "css_complexity": 63,
+          "js_complexity": 9
+        }
+      },
+      "issues_found": [],
+      "status": "completed"
+    }
+  ],
+  "summary": {
+    "avg_issues_per_check": 0.0,
+    "fix_success_rate": 0.0,
+    "monitoring_duration": "20 минут"
+  }
+}

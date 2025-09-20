@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Mentor Autonomous AI System</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            min-height: 100vh; 
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; color: white; margin-bottom: 30px; }
+        .header h1 { font-size: 3em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .header p { font-size: 1.3em; opacity: 0.9; }
+        .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .status-card { background: rgba(255,255,255,0.95); border-radius: 15px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .status-card h3 { color: #2c3e50; margin-bottom: 15px; font-size: 1.3em; }
+        .metric { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .metric-value { font-weight: bold; color: #667eea; }
+        .chat-container { display: flex; gap: 20px; height: 500px; }
+        .chat-messages { flex: 1; background: white; border-radius: 15px; padding: 20px; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .chat-sidebar { width: 350px; background: rgba(255,255,255,0.95); border-radius: 15px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .message { margin-bottom: 15px; padding: 15px; border-radius: 12px; }
+        .user-message { background: #e3f2fd; margin-left: 30px; border-left: 4px solid #2196f3; }
+        .agent-message { background: #f3e5f5; margin-right: 30px; border-left: 4px solid #9c27b0; }
+        .system-message { background: #e8f5e8; text-align: center; font-style: italic; border-left: 4px solid #4caf50; }
+        .autonomous-message { background: #fff3e0; border-left: 4px solid #ff9800; }
+        .input-container { display: flex; gap: 15px; margin-top: 20px; }
+        .message-input { flex: 1; padding: 15px; border: none; border-radius: 25px; font-size: 16px; outline: none; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .send-button { padding: 15px 30px; background: linear-gradient(135deg, #4CAF50, #45a049); color: white; border: none; border-radius: 25px; cursor: pointer; font-size: 16px; transition: transform 0.2s; }
+        .send-button:hover { transform: translateY(-2px); }
+        .agent-selector { margin-bottom: 20px; }
+        .agent-selector select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        .autonomous-tasks { margin-top: 20px; }
+        .task-item { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 8px; font-size: 0.9em; border-left: 3px solid #667eea; }
+        .agent-status { display: flex; align-items: center; margin-bottom: 8px; }
+        .status-indicator { width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; }
+        .status-active { background: #4CAF50; }
+        .status-idle { background: #ff9800; }
+        .status-offline { background: #f44336; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Mentor Autonomous AI System</h1>
+            <p>Автономная система с визуальным мониторингом и самооптимизацией</p>
+        </div>
+        
+        <div class="status-grid">
+            <div class="status-card">
+                <h3>📊 Системные Метрики</h3>
+                <div class="metric">
+                    <span>Статус системы:</span>
+                    <span class="metric-value" id="systemStatus">Загрузка...</span>
+                </div>
+                <div class="metric">
+                    <span>Активных агентов:</span>
+                    <span class="metric-value" id="activeAgents">0</span>
+                </div>
+                <div class="metric">
+                    <span>Выполнено задач:</span>
+                    <span class="metric-value" id="completedTasks">0</span>
+                </div>
+                <div class="metric">
+                    <span>Время работы:</span>
+                    <span class="metric-value" id="uptime">0с</span>
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <h3>🤖 Статус Агентов</h3>
+                <div id="agentStatusList">
+                    <div class="agent-status">
+                        <span class="status-indicator status-active"></span>
+                        <span>Загрузка агентов...</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="status-card">
+                <h3>⚡ Производительность</h3>
+                <div class="metric">
+                    <span>Среднее время отклика:</span>
+                    <span class="metric-value">< 0.1с</span>
+                </div>
+                <div class="metric">
+                    <span>Использование ресурсов:</span>
+                    <span class="metric-value">Оптимально</span>
+                </div>
+                <div class="metric">
+                    <span>Автономность:</span>
+                    <span class="metric-value">100%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message system-message">
+                    <strong>🚀 Система:</strong> Mentor Autonomous AI System запущена! Все агенты работают автономно и готовы к взаимодействию.
+                </div>
+            </div>
+            
+            <div class="chat-sidebar">
+                <div class="agent-selector">
+                    <label for="agentSelect"><strong>Выберите агента:</strong></label>
+                    <select id="agentSelect">
+                        <option value="">Автоматический выбор</option>
+                        <option value="general_assistant">🧠 Универсальный Помощник</option>
+                        <option value="code_developer">💻 Разработчик Кода</option>
+                        <option value="data_analyst">📊 Аналитик Данных</option>
+                        <option value="project_manager">📋 Менеджер Проектов</option>
+                        <option value="designer">🎨 Дизайнер</option>
+                        <option value="qa_tester">🔍 Тестировщик</option>
+                    </select>
+                </div>
+                
+                <div class="autonomous-tasks">
+                    <h3>🤖 Автономные Задачи</h3>
+                    <div id="autonomousTasksList">
+                        <div class="task-item">Агенты генерируют автономные задачи...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-container">
+            <input type="text" id="messageInput" class="message-input" placeholder="Напишите сообщение автономному агенту..." />
+            <button onclick="sendMessage()" class="send-button">Отправить</button>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+        let userId = 'user_' + Math.random().toString(36).substr(2, 9);
+        
+        function connectWebSocket() {
+            ws = new WebSocket(`ws://${window.location.host}/ws/${userId}`);
+            
+            ws.onopen = function() {
+                console.log('WebSocket подключен к автономной системе');
+            };
+            
+            ws.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                addMessage(data.message, 'agent', data.agent, data.ai_used);
+            };
+            
+            ws.onclose = function() {
+                console.log('WebSocket отключен, переподключение...');
+                setTimeout(connectWebSocket, 3000);
+            };
+        }
+        
+        function addMessage(message, type, agent = '', ai_used = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            
+            if (type === 'user') {
+                messageDiv.className = 'message user-message';
+                messageDiv.innerHTML = `<strong>Вы:</strong> ${message}`;
+            } else {
+                messageDiv.className = ai_used ? 'message autonomous-message' : 'message agent-message';
+                const badge = ai_used ? ' 🧠' : '';
+                messageDiv.innerHTML = `<strong>${agent}${badge}:</strong> ${message}`;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            const agentType = document.getElementById('agentSelect').value;
+            
+            if (message && ws) {
+                addMessage(message, 'user');
+                
+                const payload = {
+                    message: message,
+                    agent_type: agentType || null,
+                    user_id: userId
+                };
+                
+                ws.send(JSON.stringify(payload));
+                input.value = '';
+            }
+        }
+        
+        function updateStatus() {
+            fetch('/api/system/status')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('systemStatus').textContent = data.system_status;
+                    document.getElementById('activeAgents').textContent = data.active_agents;
+                    document.getElementById('completedTasks').textContent = data.autonomous_tasks;
+                    document.getElementById('uptime').textContent = data.uptime;
+                    
+                    // Обновляем статус агентов
+                    const agentStatusList = document.getElementById('agentStatusList');
+                    agentStatusList.innerHTML = '';
+                    
+                    if (data.agents) {
+                        Object.values(data.agents).forEach(agent => {
+                            const agentDiv = document.createElement('div');
+                            agentDiv.className = 'agent-status';
+                            agentDiv.innerHTML = `
+                                <span class="status-indicator status-active"></span>
+                                <span>${agent.name}: Активен</span>
+                            `;
+                            agentStatusList.appendChild(agentDiv);
+                        });
+                    }
+                })
+                .catch(error => console.error('Ошибка обновления статуса:', error));
+        }
+        
+        function updateAutonomousTasks() {
+            fetch('/api/autonomous/tasks')
+                .then(response => response.json())
+                .then(data => {
+                    const tasksList = document.getElementById('autonomousTasksList');
+                    tasksList.innerHTML = '';
+                    
+                    if (data.tasks.length === 0) {
+                        tasksList.innerHTML = '<div class="task-item">Агенты генерируют задачи...</div>';
+                    } else {
+                        data.tasks.slice(-5).forEach(task => {
+                            const taskDiv = document.createElement('div');
+                            taskDiv.className = 'task-item';
+                            taskDiv.innerHTML = `<strong>${task.description.substring(0, 60)}...</strong><br><small>${task.assigned_to} | ${task.status}</small>`;
+                            tasksList.appendChild(taskDiv);
+                        });
+                    }
+                })
+                .catch(error => console.error('Ошибка обновления задач:', error));
+        }
+        
+        // Обработка Enter
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Инициализация
+        connectWebSocket();
+        updateStatus();
+        updateAutonomousTasks();
+        
+        // Обновление каждые 5 секунд
+        setInterval(updateStatus, 5000);
+        setInterval(updateAutonomousTasks, 8000);
+    </script>
+</body>
+</html>
+    
